@@ -1,7 +1,4 @@
-package springampq;
-
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -14,17 +11,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Scheduled;
 
 @Configuration
 @EnableRabbit
-public class RoundRobin {
-    @Bean
-    public Queue sample() {
+public class PublishSubscribeSample {
+    @Bean(name = "queue1")
+    public Queue queue1() {
         boolean durable = false;
         boolean exclusive = false;
         boolean autoDelete = true;
-        return new Queue("sample", durable, exclusive, autoDelete);
+        return new Queue("queue1", durable, exclusive, autoDelete);
+    }
+
+    @Bean(name = "queue2")
+    public Queue queue2() {
+        boolean durable = false;
+        boolean exclusive = false;
+        boolean autoDelete = true;
+        return new Queue("queue2", durable, exclusive, autoDelete);
+    }
+
+    @Bean
+    public FanoutExchange exchange(){
+        return new FanoutExchange("sampleExchange");
+    }
+
+    @Bean
+    @Autowired
+    public Binding binding1(FanoutExchange exchange){
+        return BindingBuilder.bind(queue1()).to(exchange);
+    }
+
+    @Bean
+    @Autowired
+    public Binding binding2(FanoutExchange exchange){
+        return BindingBuilder.bind(queue2()).to(exchange);
     }
 
     @Bean
@@ -49,7 +70,10 @@ public class RoundRobin {
 
     @Bean
     public RabbitTemplate rabbitTemplate() {
-        return new RabbitTemplate(connectionFactory());
+        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+        template.setExchange("sampleExchange");
+
+        return template;
     }
 
     @Bean
@@ -63,12 +87,12 @@ public class RoundRobin {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(RoundRobin.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(PublishSubscribeSample.class);
         Producer producer = context.getBean(Producer.class);
         Consumer consumer = context.getBean(Consumer.class);
 
         for(int i = 0; i < 10; ++i) {
-            producer.send();
+            producer.send(i);
         }
     }
 
@@ -76,26 +100,22 @@ public class RoundRobin {
         @Autowired
         private RabbitTemplate template;
 
-        @Autowired
-        private Queue queue;
-
-        @Scheduled(fixedDelay = 1000, initialDelay = 500)
-        public void send() {
-            String message = "message";
-            this.template.convertAndSend(queue.getName(), message);
+        public void send(int i) {
+            String message = String.format("message №%d", i);
+            this.template.convertAndSend(message);
             System.out.println(String.format("Sent message: %s", message));
         }
     }
 
     public class Consumer {
-        @RabbitListener(queues = "sample")
+        @RabbitListener(queues = "queue1")
         public void worker1(String message) {
-            System.out.println(String.format("Worker [1]: %s", message));
+            System.out.println(String.format("Worker [queue1]: %s", message));
         }
 
-        @RabbitListener(queues = "sample")
+        @RabbitListener(queues = "queue2")
         public void worker2(String message) {
-            System.out.println(String.format("Worker [2]: %s", message));
+            System.out.println(String.format("Worker [queue2]: %s", message));
         }
 
     }

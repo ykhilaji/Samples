@@ -1,5 +1,3 @@
-package springampq;
-
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -193,12 +191,6 @@ public class BasicSample {
 
     @RabbitListener(queues = "sample")
     class Consumer {
-
-//        @RabbitListener(bindings = @QueueBinding(
-//                value = @Queue(value = "myQueue", durable = "true"),
-//                exchange = @Exchange(value = "auto.exch", ignoreDeclarationExceptions = "true"),
-//                key = "orderRoutingKey")
-//        )
         @RabbitHandler
         public void receive(String in) {
             System.out.println(" [x] Received '" + in + "'");

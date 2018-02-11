@@ -1,6 +1,3 @@
-package pure;
-
-
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
@@ -25,7 +22,7 @@ public class BasicSample {
             this.connection = factory.newConnection();
             this.channel = connection.createChannel();
 
-            boolean durable = false;
+            boolean durable = true;
             boolean temporary = false;
             boolean exclusive = false;
 
@@ -53,7 +50,7 @@ public class BasicSample {
             this.connection = factory.newConnection();
             this.channel = connection.createChannel();
 
-            boolean durable = false;
+            boolean durable = true;
             boolean temporary = false;
             boolean exclusive = false;
 

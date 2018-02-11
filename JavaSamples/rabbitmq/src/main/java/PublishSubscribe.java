@@ -1,51 +1,46 @@
-package pure;
-
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
-import java.util.Random;
 import java.util.concurrent.TimeoutException;
 
-public class RoutingSample {
+public class PublishSubscribe {
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
         Producer producer = new Producer();
-        Consumer consumerOne = new Consumer(1, "queue1", "key1");
-        Consumer consumerTwo = new Consumer(2, "queue2", "key2");
-        Consumer consumerThree = new Consumer(3, "queue3", "key2");
-
-        String[] keys = new String[]{"key1", "key2"};
-        Random random = new Random();
+        Consumer consumerOne = new Consumer(1, "firstQueue");
+        Consumer consumerTwo = new Consumer(2, "secondQueue");
 
         for (int i = 0; i < 10; ++i) {
-            producer.send(String.format("Message #%d", i), keys[random.nextInt(keys.length)]);
-            Thread.sleep(100);
+            producer.send(String.format("Message #%d", i));
+            Thread.sleep(500);
         }
 
         producer.close();
         consumerOne.close();
         consumerTwo.close();
-        consumerThree.close();
 
         /*
-        *   Consumer [2][queue2][key2]: Message #0
-            Consumer [3][queue3][key2]: Message #0
-            Consumer [3][queue3][key2]: Message #1
-            Consumer [2][queue2][key2]: Message #1
-            Consumer [2][queue2][key2]: Message #2
-            Consumer [3][queue3][key2]: Message #2
-            Consumer [1][queue1][key1]: Message #3
-            Consumer [1][queue1][key1]: Message #4
-            Consumer [1][queue1][key1]: Message #5
-            Consumer [1][queue1][key1]: Message #6
-            Consumer [2][queue2][key2]: Message #7
-            Consumer [3][queue3][key2]: Message #7
-            Consumer [3][queue3][key2]: Message #8
-            Consumer [2][queue2][key2]: Message #8
-            Consumer [2][queue2][key2]: Message #9
-            Consumer [3][queue3][key2]: Message #9
-        * */
+        *   Consumer [1][firstQueue]: Message #0
+            Consumer [2][secondQueue]: Message #0
+            Consumer [1][firstQueue]: Message #1
+            Consumer [2][secondQueue]: Message #1
+            Consumer [2][secondQueue]: Message #2
+            Consumer [1][firstQueue]: Message #2
+            Consumer [1][firstQueue]: Message #3
+            Consumer [2][secondQueue]: Message #3
+            Consumer [1][firstQueue]: Message #4
+            Consumer [2][secondQueue]: Message #4
+            Consumer [1][firstQueue]: Message #5
+            Consumer [2][secondQueue]: Message #5
+            Consumer [1][firstQueue]: Message #6
+            Consumer [2][secondQueue]: Message #6
+            Consumer [1][firstQueue]: Message #7
+            Consumer [2][secondQueue]: Message #7
+            Consumer [2][secondQueue]: Message #8
+            Consumer [1][firstQueue]: Message #8
+            Consumer [1][firstQueue]: Message #9
+            Consumer [2][secondQueue]: Message #9
+*/
     }
-
 
     static class Producer {
         private Connection connection;
@@ -57,15 +52,21 @@ public class RoutingSample {
             this.connection = factory.newConnection();
             this.channel = connection.createChannel();
 
-            String exchangeName = "directMessages";
-            String exchangeType = "direct"; // direct type - a message goes to the queues whose binding key exactly matches the routing key of the message
+            boolean durable = true;
+            boolean temporary = false;
+            boolean exclusive = false;
+
+            String exchangeName = "exchange";
+            String exchangeType = "fanout"; // direct, fanout, topic or header
 
             this.channel.exchangeDeclare(exchangeName, exchangeType);
+            this.channel.queueDeclare("example", durable, temporary, exclusive, null);
         }
 
-        public void send(String message, String routingKey) throws IOException {
-            // First param: exchange name
-            this.channel.basicPublish("directMessages", routingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+        public void send(String message) throws IOException {
+            // First param: Exchange name
+            // Second param: Routing key
+            this.channel.basicPublish("exchange", "", MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
         }
 
         public void close() throws IOException, TimeoutException {
@@ -79,7 +80,7 @@ public class RoutingSample {
         private Channel channel;
         private String queueName;
 
-        public Consumer(final int id, final String queueName, final String routingKey) throws IOException, TimeoutException {
+        public Consumer(final int id, final String queueName) throws IOException, TimeoutException {
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost("localhost");
             this.connection = factory.newConnection();
@@ -93,7 +94,8 @@ public class RoutingSample {
 
             this.channel.queueDeclare(queueName, durable, temporary, exclusive, null);
 
-            String exchangeName = "directMessages";
+            String exchangeName = "exchange";
+            String routingKey = "";
             this.channel.queueBind(queueName, exchangeName, routingKey);
 
             boolean autoAck = false;
@@ -102,13 +104,14 @@ public class RoutingSample {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     String message = new String(body, "UTF-8");
-                    System.out.println(String.format("Consumer [%d][%s][%s]: %s", id, queueName, routingKey, message));
+                    System.out.println(String.format("Consumer [%d][%s]: %s", id, queueName, message));
 
                     channel.basicAck(envelope.getDeliveryTag(), false);
                 }
             });
 
-            this.channel.basicQos(1);
+            int maxMessagesAtOneTime = 1;
+            this.channel.basicQos(maxMessagesAtOneTime);
         }
 
         public void close() throws IOException, TimeoutException {

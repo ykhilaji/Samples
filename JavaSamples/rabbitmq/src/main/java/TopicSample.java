@@ -1,5 +1,3 @@
-package pure;
-
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
