@@ -19,7 +19,7 @@ public class ChainMapJobs {
         Configuration conf = new Configuration(false);
         Job job = Job.getInstance(conf, "chainJobs");
 
-        job.setJarByClass(WordCountAndSort.class);
+        job.setJarByClass(ChainMapJobs.class);
         job.setReducerClass(WordReducer.class);
         job.setCombinerClass(WordReducer.class);
         job.setOutputKeyClass(Text.class);
