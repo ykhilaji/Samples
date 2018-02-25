@@ -11,5 +11,17 @@
 
     <artifactId>hadoop</artifactId>
 
+    <properties>
+        <hadoop-client>2.8.2</hadoop-client>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop-client}</version>
+        </dependency>
+    </dependencies>
+
 
 </project>
