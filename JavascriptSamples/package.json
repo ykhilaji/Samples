@@ -1,0 +1,11 @@
+{
+  "name": "javascriptsamples",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "amqplib": "0.5.2"
+  }
+}
