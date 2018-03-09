@@ -6,6 +6,11 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "amqplib": "0.5.2"
+    "amqplib": "0.5.2",
+    "express": "4.16.2",
+    "body-parser": "1.18.2",
+    "json-loader": "0.5.7",
+    "cookie-parser": "1.4.3",
+    "mongoose": "5.0.9"
   }
 }
