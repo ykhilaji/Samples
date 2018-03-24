@@ -1,0 +1,27 @@
+{
+  "pc": {
+    "label": "PC",
+    "count": 9344,
+    "peak24": 13566
+  },
+  "ps3": {
+    "label": "PS3",
+    "count": 6620,
+    "peak24": 7622
+  },
+  "xbox": {
+    "label": "XBOX360",
+    "count": 1587,
+    "peak24": 1825
+  },
+  "xone": {
+    "label": "XBOXONE",
+    "count": 10046,
+    "peak24": 12644
+  },
+  "ps4": {
+    "label": "PS4",
+    "count": 13206,
+    "peak24": 15261
+  }
+}
