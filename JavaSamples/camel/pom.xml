@@ -12,7 +12,7 @@
     <artifactId>camel</artifactId>
 
     <properties>
-        <camel>2.20.2</camel>
+        <camel>2.21.0</camel>
         <rabbitmq>5.1.2</rabbitmq>
     </properties>
 
@@ -29,18 +29,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jms</artifactId>
-            <version>${camel}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
             <artifactId>camel-stream</artifactId>
             <version>${camel}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>${rabbitmq}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
