@@ -22,10 +22,14 @@
         <module>jdbc</module>
         <module>concurrency</module>
         <module>camel</module>
-        <module>apachestorm</module>
-        <module>apacheflume</module>
         <module>hibernate</module>
         <module>jackson</module>
         <module>jetty</module>
+        <module>jaxb</module>
+        <module>infispan</module>
+        <module>flink</module>
+        <module>flume</module>
+        <module>storm</module>
+        <module>avro</module>
     </modules>
 </project>

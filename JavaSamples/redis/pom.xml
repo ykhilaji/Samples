@@ -13,6 +13,7 @@
 
     <properties>
         <redis>2.9.0</redis>
+        <junit>4.12</junit>
     </properties>
 
     <dependencies>
@@ -23,15 +24,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-redis</artifactId>
-            <version>1.8.6.RELEASE</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>4.3.9.RELEASE</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
