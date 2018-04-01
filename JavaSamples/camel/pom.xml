@@ -13,7 +13,8 @@
 
     <properties>
         <camel>2.21.0</camel>
-        <rabbitmq>5.1.2</rabbitmq>
+        <infispan>9.1.7.Final</infispan>
+        <slf4j>1.7.25</slf4j>
     </properties>
 
     <dependencies>
@@ -34,13 +35,28 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-pgevent</artifactId>
+            <version>${camel}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-infinispan</artifactId>
+            <version>${camel}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-stream</artifactId>
             <version>${camel}</version>
         </dependency>
         <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-embedded</artifactId>
+            <version>${infispan}</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j}</version>
         </dependency>
     </dependencies>
 
