@@ -39,6 +39,7 @@ node_modules/
 jspm_packages/
 .idea/
 *.xml
+package-lock.json
 
 # Typescript v1 declaration files
 typings/
