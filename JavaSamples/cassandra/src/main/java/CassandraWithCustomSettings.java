@@ -1,5 +1,7 @@
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.exceptions.InvalidTypeException;
+import com.datastax.driver.core.policies.DefaultRetryPolicy;
+import com.datastax.driver.core.policies.RoundRobinPolicy;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
@@ -23,6 +25,8 @@ public class CassandraWithCustomSettings {
                 .withCompression(ProtocolOptions.Compression.NONE)
                 .withQueryOptions(queryOptions)
                 .withPoolingOptions(poolingOptions)
+                .withLoadBalancingPolicy(new RoundRobinPolicy())
+                .withRetryPolicy(DefaultRetryPolicy.INSTANCE)
                 .build();
 
         cluster
