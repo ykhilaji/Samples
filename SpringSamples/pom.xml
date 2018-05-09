@@ -10,9 +10,10 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>ampq</module>
-        <module>springdataredis</module>
-        <module>springredis</module>
         <module>redis</module>
+        <module>cassandra</module>
+        <module>mvc</module>
+        <module>security</module>
     </modules>
 
 
