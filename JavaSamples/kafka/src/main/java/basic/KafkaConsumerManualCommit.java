@@ -7,7 +7,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import java.util.Collections;
 import java.util.Properties;
 
-public class KafkaConsumerSample {
+public class KafkaConsumerManualCommit {
     private static final String TOPIC = "sample";
     private static final String BOOTSTRAP_SERVER = "localhost:9092";
 
@@ -18,12 +18,7 @@ public class KafkaConsumerSample {
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER);
-        properties.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 100);
-        properties.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, 1024);
-        properties.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, 200);
-        properties.put(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, RoundRobinAssignor.class.getName());
-        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
-        properties.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "5000");
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 
         KafkaConsumer<Long, String> kafkaConsumer = new KafkaConsumer<>(properties);
         kafkaConsumer.subscribe(Collections.singletonList(TOPIC));
@@ -44,6 +39,10 @@ public class KafkaConsumerSample {
 
                 totalRecords++;
             }
+
+            kafkaConsumer.commitSync(); // retry if error happens
+
+//            kafkaConsumer.commitAsync(); // no retry if error happens
         }
         kafkaConsumer.close();
         System.out.println("DONE");

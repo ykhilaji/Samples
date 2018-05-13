@@ -21,6 +21,12 @@ public class KafkaProducerSample {
         properties.put(ProducerConfig.CLIENT_ID_CONFIG, "KafkaProducerSample");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG, "1024"); // max buffer in bytes
+        properties.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "none");
+        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true"); // exactly-once-delivery
+        properties.put(ProducerConfig.ACKS_CONFIG, "1"); // 1 or all required by ENABLE_IDEMPOTENCE_CONFIG
+        properties.put(ProducerConfig.RETRIES_CONFIG, "1"); // > 1 required by ENABLE_IDEMPOTENCE_CONFIG
+        properties.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1"); // to guarantee message ordering per partition
 
         KafkaProducer<Long, String> kafkaProducer = new KafkaProducer<>(properties);
 
