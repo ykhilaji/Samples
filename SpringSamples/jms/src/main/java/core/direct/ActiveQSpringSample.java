@@ -1,8 +1,8 @@
-package core;
+package core.direct;
 
-import core.configuration.AppConfiguration;
-import core.configuration.Consumer;
-import core.configuration.Producer;
+import core.direct.configuration.AppConfiguration;
+import core.direct.configuration.Consumer;
+import core.direct.configuration.Producer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class ActiveQSpringSample {

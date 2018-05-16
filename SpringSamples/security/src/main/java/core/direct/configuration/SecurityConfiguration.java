@@ -1,4 +1,4 @@
-package core.configuration;
+package core.direct.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

@@ -1,4 +1,4 @@
-package core.configuration;
+package core.direct.configuration;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.context.annotation.Bean;
