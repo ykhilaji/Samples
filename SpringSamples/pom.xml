@@ -14,6 +14,7 @@
         <module>cassandra</module>
         <module>mvc</module>
         <module>security</module>
+        <module>jms</module>
     </modules>
 
 
