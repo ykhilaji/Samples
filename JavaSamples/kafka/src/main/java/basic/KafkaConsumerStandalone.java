@@ -21,6 +21,6 @@ public class KafkaConsumerStandalone {
 
         consumer.assign(topicPartitions);
 
-        // while true ... consumer.poll(...) ... 
+        // while true ... consumer.poll(...) ...
     }
 }
