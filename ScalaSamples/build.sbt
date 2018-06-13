@@ -9,5 +9,6 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc"        % "3.2.+",
   "org.postgresql" % "postgresql" % "42.2.1",
   "com.github.mauricio" %% "postgresql-async"  % "0.2.+",
-  "org.slf4j"           %  "slf4j-simple"      % "1.7.+"
+  "org.slf4j"           %  "slf4j-simple"      % "1.7.+",
+  "com.typesafe.akka" %% "akka-actor" % "2.5.13"
 )
