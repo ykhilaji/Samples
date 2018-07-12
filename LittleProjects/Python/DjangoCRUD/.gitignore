@@ -1,0 +1,7 @@
+.idea/*
+static/css/*
+static/fonts/*
+static/js/bootstrap*
+static/js/jQuery*
+*pyc
+*.sqlite3
