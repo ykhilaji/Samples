@@ -1,6 +1,8 @@
 from django.db import models
 
 
+# because django does not support updating rows with auto incremented PK =\
+# instead of updating django creates new row with updated values
 class Author(models.Model):
     indexes = [
         models.Index(fields=['first_name', 'last_name'])

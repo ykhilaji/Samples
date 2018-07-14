@@ -1,7 +1,7 @@
 {% extends "crud/index.html" %}
 
 {% block publisher %}
-    <div id="myModal" class="modal fade" role="dialog">
+    <div id="save" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -11,6 +11,9 @@
                 <div class="modal-body">
                     <form action="/crud/publishers/" method="post">
                         {% csrf_token %}
+                        <div class="form-group">
+                            <input type="hidden" name="id">
+                        </div>
                         <div class="form-group">
                             {{ form.name.errors }}
                             <label for={{ form.name.id_for_label }}>Name:</label>
@@ -32,13 +35,13 @@
                 <h2>
                     Publishers
                     <button type="button" class="btn btn-info btn-lg pull-right" data-toggle="modal"
-                            data-target="#myModal">
+                            data-target="#save">
                         New
                     </button>
                 </h2>
             </div>
             <div class="panel-body">
-                <table class="table table-striped">
+                <table class="table table-hover">
                     <thead>
                     <tr>
                         <th>Name</th>
@@ -46,8 +49,8 @@
                     </thead>
                     <tbody>
                     {% for publisher in publishers %}
-                        <tr>
-                            <td>{{ publisher.name }}</td>
+                        <tr data-id="{{ publisher.id }}" data-toggle="modal" data-target="#save">
+                            <td data-input-name="name">{{ publisher.name }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

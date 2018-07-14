@@ -86,9 +86,18 @@ class PublisherView(generic.ListView, generic.FormView):
     def post(self, request, *args, **kwargs):
         form = PublisherForm(request.POST)
 
+        print(request.POST)
+
         if form.is_valid():
             publisher = form.save(commit=False)
             publisher.save()
+        else:
+            if request.POST.get('id'):
+                uid = request.POST.get('id')
+
+                if request.POST.get('name'):
+                    publisher = models.Publisher.objects.get(id=uid)
+
+                    publisher.name = request.POST.get('name')
 
         return HttpResponseRedirect('/crud/publishers/')
-
