@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.0/babel.js"></script>
+    <title>Title</title>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        let data = [
+            {
+                title: 'first',
+                items: [1, 2, 3, 4, 5]
+            },
+            {
+                title: 'second',
+                items: [2, 4, 6, 8, 10]
+            },
+            {
+                title: 'third',
+                items: [3, 6, 9, 12, 15]
+            }];
+
+        let props = {title: 'Sample', data: data};
+
+        const createTitle = title => React.createElement('p', null, title);
+        const createItems = items => items.map((item, i) => React.createElement('li', {key: i}, item));
+        const listOfItems = items => React.createElement('ul', null, createItems(items));
+        const createRow = ({title, items}, i) => React.createElement('div', {className: 'row', key: i}, createTitle(title), listOfItems(items));
+        const container = ({title, data}) => React.createElement('div', {className: 'container'}, createTitle(title), data.map((el, i) => createRow(el, i)));
+
+        ReactDOM.render(
+            container(props),
+            document.getElementById('root')
+        )
+    </script>
+</body>
+</html>

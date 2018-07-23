@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.0/babel.js"></script>
+    <title>Title</title>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        let data = [
+            {
+                title: 'first',
+                items: [1, 2, 3, 4, 5]
+            },
+            {
+                title: 'second',
+                items: [2, 4, 6, 8, 10]
+            },
+            {
+                title: 'third',
+                items: [3, 6, 9, 12, 15]
+            }];
+
+        let props = {title: 'Sample', data: data};
+
+        const CreateItems = ({item}) => <li>{item}</li>;
+        const ListOfItems = ({items}) => <ul>{items.map((el, i) => <CreateItems item={el} key={i} />)}</ul>;
+        const CreateRow = ({title, items}) =>
+            <div className="row">
+                <p>{title}</p>
+                <ListOfItems items={items}/>
+            </div>;
+        const Container = ({title, data}) =>
+            <div className="container">
+                <p>{title}</p>
+                {data.map((el, i) => <CreateRow key={i} {...el} />)}
+            </div>;
+
+        ReactDOM.render(
+            Container(props),
+            document.getElementById('root')
+        )
+    </script>
+</body>
+</html>
