@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.0/babel.js"></script>
+    <title>Title</title>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        class App extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    items: []
+                }
+
+                this.addItem = this.addItem.bind(this);
+                this.removeItem = this.removeItem.bind(this);
+            }
+
+            addItem() {
+                let item = this.refs._input;
+                const items = [...this.state.items, item.value];
+                item.value = '';
+
+                this.setState({items});
+            }
+
+            removeItem(item) {
+                const items = this.state.items.filter(el => el !== item);
+
+                this.setState({items});
+            }
+
+            static propTypes = {
+                listTitle: React.PropTypes.string
+            }
+
+            static defaultProps = {
+                listTitle: "Title"
+            }
+
+            render() {
+                return (
+                    <div>
+                        <input type="text" ref="_input"/>
+                        <button onClick={this.addItem}>Add</button>
+                        <List title={this.props.listTitle} items={this.state.items} onRemove={this.removeItem}/>
+                    </div>
+                );
+            }
+        }
+
+        const List = ({title="Title", items=[], onRemove=f=>f}) => {
+            return (
+                    <div>
+                        <p>{title}</p>
+                        <ul>
+                            {items.map((item, i) => <Item key={i} value={item} onRemove={() => onRemove(item)}/>)}
+                        </ul>
+                    </div>
+            )
+        };
+
+        const Item = ({value="value", onRemove=f=>f}) => {
+            return (
+                    <li onClick={onRemove}>{value}</li>
+            )
+        }
+
+        ReactDOM.render(<App listTitle="List title"/>, document.getElementById('root'));
+    </script>
+</body>
+</html>
