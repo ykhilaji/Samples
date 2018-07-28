@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.0/babel.js"></script>
+    <title>Title</title>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        class App extends React.Component {
+            constructor(props) {
+                super(props);
+
+                this.state = {
+                    value: "old"
+                }
+            }
+
+            componentWillMount() {
+                console.log('componentWillMount');
+            }
+
+            componentDidMount() {
+                console.log('componentDidMount');
+
+                this.setState({
+                    value: "value"
+                })
+            }
+
+            componentWillUnmount() {
+                console.log('componentWillUnmount');
+            }
+
+            componentWillReceiveProps(newProps) {
+                console.log("componentWillReceiveProps: " + newProps);
+                this.setState({
+                    ...this.state,
+                    newProps
+                });
+            }
+
+            shouldComponentUpdate(nextProps, nextState) {
+                console.log("shouldComponentUpdate: " + nextProps + ", " + nextState.value);
+
+                return true
+            }
+
+            componentWillUpdate(nextProps, nextState) {
+                console.log("Next props: " + nextProps + ", " + nextState.value);
+            }
+
+            componentDidUpdate(prevProps, prevState) {
+                console.log("Old props: " + prevProps + ", " + prevState.value);
+            }
+
+            render() {
+                return (
+                        <p>Some text</p>
+                )
+            }
+        }
+
+        ReactDOM.render(<App myProp="myProp"/>, document.getElementById("root"))
+    </script>
+</body>
+</html>

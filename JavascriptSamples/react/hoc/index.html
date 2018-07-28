@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.0/babel.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+    const Component = ({value}) => {
+        return (
+                <p>{value}</p>
+        )
+    };
+
+    const Wrapper = (WrappedComponent, value, timer) =>
+        class Wrapper extends React.Component {
+            constructor(props) {
+                super(props);
+
+                this.state = {
+                    hidden: true
+                }
+            }
+
+            componentDidMount() {
+                setTimeout(() => this.setState({
+                    hidden: false
+                }), timer)
+            }
+
+            render() {
+                return (
+                        <div>
+                            {(this.state.hidden) ? <p>Value is hidden</p> : <WrappedComponent value={value}/>}
+                        </div>
+                )
+            }
+        };
+
+    const WrappedComponent = Wrapper(Component, "some value", 5);
+
+    ReactDOM.render(<WrappedComponent/>, document.getElementById("root"))
+</script>
+</body>
+</html>
