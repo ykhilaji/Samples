@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TornadoWebsocketMemcachedCrud</title>
+</head>
+<body>
+    <div>
+        <p>Get by id</p>
+        <input type="number" min="0" id="getById" placeholder="id">
+        <button id="getByIdBtn">GET</button>
+        <p>Delete by id</p>
+        <input type="number" min="0" id="deleteById" placeholder="id">
+        <button id="deleteByIdBtn">GET</button>
+        <p>New entity</p>
+        <input type="text" id="newEntityValue" placeholder="value">
+        <button id="newEntityBtn">GET</button>
+        <p>Update entity</p>
+        <input type="number" min="0" id="updateEntityId" placeholder="id">
+        <input type="text" id="updateEntityValue" placeholder="value">
+        <button id="updateEntityBtn">GET</button>
+
+        <p>Result:</p>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        window.onload = function () {
+            var socket = new WebSocket('ws://localhost:8080/api');
+            var getById = document.getElementById('getById');
+            var getByIdBtn = document.getElementById('getByIdBtn');
+            var deleteById = document.getElementById('deleteById');
+            var deleteByIdBtn = document.getElementById('deleteByIdBtn');
+            var newEntityValue = document.getElementById('newEntityValue');
+            var newEntityBtn = document.getElementById('newEntityBtn');
+            var updateEntityId = document.getElementById('updateEntityId');
+            var updateEntityValue = document.getElementById('updateEntityValue');
+            var updateEntityBtn = document.getElementById('updateEntityBtn');
+            var result = document.getElementById('result');
+
+            socket.onopen = function (event) {
+                console.log('Connection opened');
+            };
+
+            socket.onclose = function (p1) {
+              console.log('Connection closed');
+            };
+
+            socket.onerror = function (event) {
+                console.log('Error: ' + event.message);
+            };
+
+            socket.onmessage = function (p1) {
+                console.log('Message: ' + p1.data);
+                result.innerHTML = p1.data || 'null';
+            };
+
+            getByIdBtn.addEventListener('click', function () {
+                socket.send(JSON.stringify({action: 'GET', payload: {id: getById.value}}));
+            });
+
+            deleteByIdBtn.addEventListener('click', function () {
+                socket.send(JSON.stringify({action: 'DELETE', payload: {id: deleteById.value}}));
+            });
+
+            newEntityBtn.addEventListener('click', function () {
+                socket.send(JSON.stringify({action: 'SAVE', payload: {value: newEntityValue.value}}));
+            });
+
+            updateEntityBtn.addEventListener('click', function () {
+                socket.send(JSON.stringify({action: 'UPDATE', payload: {id: updateEntityId.value, value: updateEntityValue.value}}));
+            });
+        }
+    </script>
+</body>
+</html>
