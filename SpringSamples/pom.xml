@@ -15,6 +15,7 @@
         <module>mvc</module>
         <module>security</module>
         <module>jms</module>
+        <module>springdata</module>
     </modules>
 
 
