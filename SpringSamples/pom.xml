@@ -16,6 +16,8 @@
         <module>security</module>
         <module>jms</module>
         <module>springdata</module>
+        <module>springjpa</module>
+        <module>springhibernate</module>
     </modules>
 
 
