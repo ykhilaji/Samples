@@ -16,12 +16,11 @@ public class KafkaConsumerPause {
         kafkaConsumer.subscribe(Collections.singletonList("topic"));
 
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch countDownLatch;
 
         while (true) {
             ConsumerRecords<Object, Object> records = kafkaConsumer.poll(100);
 
-            countDownLatch = new CountDownLatch(records.count());
+            final CountDownLatch countDownLatch = new CountDownLatch(records.count());
 
             for (ConsumerRecord record : records.records("topic")) {
                 executorService.submit(() -> {
