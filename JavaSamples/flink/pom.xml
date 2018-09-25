@@ -24,7 +24,7 @@
     </build>
 
     <properties>
-        <flink>1.4.2</flink>
+        <flink>1.6.0</flink>
     </properties>
 
     <dependencies>
@@ -36,6 +36,16 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-java</artifactId>
+            <version>${flink}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table_2.11</artifactId>
+            <version>${flink}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-kafka-0.11_2.11</artifactId>
             <version>${flink}</version>
         </dependency>
         <dependency>
