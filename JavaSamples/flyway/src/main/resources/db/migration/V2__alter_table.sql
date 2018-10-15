@@ -1,0 +1,1 @@
+alter table ${tableName} add column ${newValue} varchar(255);
