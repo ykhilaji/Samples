@@ -1,13 +1,13 @@
-package akka
+package basic
 
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{Actor, ActorSystem, Props}
-import akka.util.Timeout
 import akka.pattern.ask
-import scala.util.{Success, Failure}
+import akka.util.Timeout
 
 import scala.concurrent.duration.Duration
+import scala.util.Success
 
 class AskActor extends Actor {
   override def receive: Receive = {

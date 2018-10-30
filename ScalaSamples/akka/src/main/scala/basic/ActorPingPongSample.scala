@@ -1,6 +1,6 @@
-package akka
+package basic
 
-import akka.actor.{Actor, ActorRef, ActorSystem, Props, PoisonPill}
+import akka.actor.{Actor, ActorRef, ActorSystem, PoisonPill, Props}
 
 object Messages extends Enumeration {
   val PING, PONG = Value

@@ -1,9 +1,10 @@
-package akka
+package basic
+
+import akka.actor.{Actor, ActorRef, ActorSystem, PoisonPill, Props, Terminated}
+import akka.pattern.gracefulStop
 
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
-import akka.actor.{Actor, ActorRef, ActorSystem, PoisonPill, Props, Terminated}
-import akka.pattern.gracefulStop
 
 class First extends Actor {
   override def postStop(): Unit = println("Actor was stopped")

@@ -1,5 +1,3 @@
-package akka
-
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{Actor, ActorRef, ActorSystem, PoisonPill, Props, Stash}

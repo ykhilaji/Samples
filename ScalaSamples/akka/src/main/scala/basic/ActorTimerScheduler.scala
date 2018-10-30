@@ -1,7 +1,8 @@
-package akka
+package basic
+
+import akka.actor.{Actor, ActorSystem, Props, Timers}
 
 import scala.concurrent.duration._
-import akka.actor.{Actor, ActorSystem, Props, Timers}
 
 // Sample of convenient way to schedule messages in actor to it's self.
 // TimerScheduler  - is not thread-safe, i.e. it must only be used within the actor that owns it.

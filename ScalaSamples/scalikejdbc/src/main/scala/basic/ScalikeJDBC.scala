@@ -1,4 +1,6 @@
-package scalikejdbc
+package basic
+
+import scalikejdbc._
 
 case class Entity(id: Long, value: String)
 object Entity extends SQLSyntaxSupport[Entity] {

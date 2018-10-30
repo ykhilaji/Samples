@@ -1,6 +1,5 @@
-package scalikejdbc
-
 import org.scalatest._
+import scalikejdbc._
 
 case class Row(id: Int, value: String)
 

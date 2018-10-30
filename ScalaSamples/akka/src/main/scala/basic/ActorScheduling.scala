@@ -1,7 +1,8 @@
-package akka
+package basic
+
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 
 import scala.concurrent.duration._
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 
 object ActorScheduling extends App {
   class First extends Actor {
