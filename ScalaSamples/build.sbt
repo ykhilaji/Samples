@@ -8,6 +8,12 @@ val akkaVersion = "2.5.17"
 val scalaTestVersion = "3.0.5"
 val scalikeJdbcVersion = "3.3.0"
 val slickVersion = "3.2.0"
+val shapeless = "2.3.3"
+
+resolvers ++= Seq(
+  Resolver.sonatypeRepo("releases"),
+  Resolver.sonatypeRepo("snapshots")
+)
 
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
@@ -50,5 +56,13 @@ lazy val scalikeAsyncJdbcSamples = (project in file("scalikeasyncjdbc"))
       "org.scalikejdbc" %% "scalikejdbc-async" % "0.8.+",
       "com.github.mauricio" %% "postgresql-async" % "0.2.+",
       "org.scalikejdbc" %% "scalikejdbc-test" % scalikeJdbcVersion % Test
+    )
+  )
+
+lazy val shapelessSamples = (project in file("shapeless"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "com.chuusai" %% "shapeless" % shapeless
     )
   )
