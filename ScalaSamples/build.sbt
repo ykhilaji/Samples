@@ -35,6 +35,7 @@ lazy val akkaSamples = (project in file("akka"))
     commonSettings,
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+      "com.typesafe.akka" %% "akka-stream" % akkaVersion,
       "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test
     )
   )
