@@ -96,7 +96,7 @@ object AkkaStreamsGraphDSLActorSinkWithResponse extends App {
         import GraphDSL.Implicits._
 
         val source: Source[Int, NotUsed] = Source(1 to 10)
-        source ~> Flow[Int].ask(2)(a) ~> Sink.foreach[String](println)
+        source ~> Flow[Int].ask[Int](2)(a) ~> Sink.foreach[Int](println)
         ClosedShape
       }
     }
