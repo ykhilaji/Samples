@@ -9,6 +9,7 @@ val scalaTestVersion = "3.0.5"
 val scalikeJdbcVersion = "3.3.0"
 val slickVersion = "3.2.0"
 val shapeless = "2.3.3"
+val doobieVersion = "0.6.0"
 
 resolvers ++= Seq(
   Resolver.sonatypeRepo("releases"),
@@ -65,5 +66,23 @@ lazy val shapelessSamples = (project in file("shapeless"))
     commonSettings,
     libraryDependencies ++= Seq(
       "com.chuusai" %% "shapeless" % shapeless
+    )
+  )
+
+lazy val core = (project in file("core"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+    )
+  )
+
+lazy val doobie = (project in file("doobie"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "org.tpolecat" %% "doobie-core" % doobieVersion,
+      "org.tpolecat" %% "doobie-postgres" % doobieVersion,
+      "org.tpolecat" %% "doobie-specs2" % doobieVersion
+
     )
   )
