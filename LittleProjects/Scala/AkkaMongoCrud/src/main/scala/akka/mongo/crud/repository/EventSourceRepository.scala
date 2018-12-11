@@ -8,11 +8,14 @@ import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Sorts._
 import org.mongodb.scala.result.DeleteResult
+//import com.mongodb.client.model.IndexOptions
+//import org.mongodb.scala.model.Indexes._
 
 import scala.concurrent.Future
 
 class EventSourceRepository extends MongoRepository[EventSource, ObjectId] {
   override val collection: MongoCollection[EventSource] = DataSource.db.getCollection("source")
+//  collection.createIndex(ascending("name"), new IndexOptions().unique(true))
 
   def findByName(name: String): IO[Future[Option[EventSource]]] = findOne(equal("name", name))
 

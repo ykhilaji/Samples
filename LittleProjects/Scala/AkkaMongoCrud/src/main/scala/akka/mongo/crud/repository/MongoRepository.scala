@@ -2,7 +2,7 @@ package akka.mongo.crud.repository
 
 import akka.mongo.crud.model.MongoModel
 import org.mongodb.scala.bson.ObjectId
-import org.mongodb.scala.{Completed, FindObservable, MongoCollection, SingleObservable}
+import org.mongodb.scala.{Completed, Document, MongoCollection}
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.result.{DeleteResult, UpdateResult}
@@ -25,6 +25,8 @@ trait MongoRepository[A <: MongoModel, ID] extends Repository[A, ObjectId] {
   def updateOne(filter: Bson, update: Bson): IO[Future[UpdateResult]] = IO(collection.updateOne(filter, update).head())
 
   def updateMany(filter: Bson, update: Bson): IO[Future[UpdateResult]] = IO(collection.updateMany(filter, update).head())
+
+  def indexes(): IO[Future[Seq[Document]]] = IO(collection.listIndexes().toFuture())
 
   override def insert(a: A)(implicit classTag: ClassTag[A]): IO[Future[Completed]] = IO(collection.insertOne(a).head())
 

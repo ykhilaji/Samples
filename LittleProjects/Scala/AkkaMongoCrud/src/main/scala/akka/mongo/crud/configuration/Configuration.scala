@@ -5,7 +5,9 @@ import com.typesafe.config.{Config, ConfigFactory}
 object Configuration {
   val crudCfg: Config = ConfigFactory.load().getConfig("crud")
 
-  def host: String = crudCfg.getString("mongo.host")
+  val host: String = crudCfg.getString("mongo.host")
 
-  def port: Int = crudCfg.getInt("mongo.port")
+  val port: Int = crudCfg.getInt("mongo.port")
+
+  val database: String = crudCfg.getString("mongo.database")
 }

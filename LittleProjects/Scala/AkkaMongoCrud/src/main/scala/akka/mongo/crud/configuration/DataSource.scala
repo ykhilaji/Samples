@@ -1,6 +1,6 @@
 package akka.mongo.crud.configuration
 
-import akka.mongo.crud.model.{Event, EventSource}
+import akka.mongo.crud.model.{CountByTypeAggregation, Event, EventSource}
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala.{MongoClient, MongoDatabase}
 import org.mongodb.scala.bson.codecs.Macros._
@@ -9,6 +9,6 @@ import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistr
 
 object DataSource {
   val mongoClient: MongoClient = MongoClient(s"mongodb://${Configuration.host}:${Configuration.port}")
-  val codecRegistry: CodecRegistry = fromRegistries(fromProviders(classOf[Event], classOf[EventSource]), DEFAULT_CODEC_REGISTRY)
-  val db: MongoDatabase = mongoClient.getDatabase("applicationDb").withCodecRegistry(codecRegistry)
+  val codecRegistry: CodecRegistry = fromRegistries(fromProviders(classOf[Event], classOf[EventSource], classOf[CountByTypeAggregation]), DEFAULT_CODEC_REGISTRY)
+  val db: MongoDatabase = mongoClient.getDatabase(Configuration.database).withCodecRegistry(codecRegistry)
 }

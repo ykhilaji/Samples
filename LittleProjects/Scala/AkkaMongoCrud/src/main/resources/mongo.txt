@@ -1,0 +1,10 @@
+docker exec -it mongo /bin/bash
+mongo
+
+--------
+show dbs
+use applicationDb
+
+show collections
+c = db.akka.mongo.crud.logs
+c.find()
