@@ -12,9 +12,9 @@ trait Repository[ID, A] {
 
   def deleteAll(): IO[Unit]
 
-  def save(a: A): IO[A]
+  def save(a: A): IO[Unit]
 
-  def update(a: A): IO[A]
+  def update(a: A): IO[Unit]
 
   def transaction: TransactionManager
 }

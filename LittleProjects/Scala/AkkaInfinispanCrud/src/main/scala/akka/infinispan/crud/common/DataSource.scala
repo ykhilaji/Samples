@@ -10,7 +10,9 @@ import org.infinispan.util.concurrent.IsolationLevel
 
 object DataSource {
   lazy val cacheManager: DefaultCacheManager = {
-    val cache = new DefaultCacheManager()
+    val cache: DefaultCacheManager = new DefaultCacheManager()
+
+    cache.addListener(CacheEventListener())
 
     cache.defineConfiguration("entity", new ConfigurationBuilder()
       .locking().isolationLevel(IsolationLevel.READ_COMMITTED)
