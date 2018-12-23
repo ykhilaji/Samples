@@ -18,5 +18,5 @@ trait DefaultService[Entity, PK] {
 }
 
 object DefaultService {
-  type Aux[E, P, C]
+  type Aux[E, P, C <: Repository[E, P]] = DefaultService[E, P] {type A = C}
 }

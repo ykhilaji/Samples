@@ -5,6 +5,8 @@ import akka.nifi.stream.postgres.repository.EntityRepository
 
 class EntityService extends SQLService[Entity, Long] {
   override val repository = EntityRepository()
+
+  def exists(pk: Long): Either[Throwable, Boolean] = findOne(pk).map(_.isEmpty)
 }
 
 object EntityService {

@@ -12,7 +12,7 @@ object Event extends SQLSyntaxSupport[Event] {
 
   override def tableName: String = "event"
 
-  override def columns: Seq[String] = Seq("id, event_time", "value")
+  override def columns: Seq[String] = Seq("id", "event_time", "entity_id")
 
   def apply(id: Long = 0, eventTime: Option[LocalDateTime] = None, entityId: Long): Event = new Event(id, eventTime, entityId)
 

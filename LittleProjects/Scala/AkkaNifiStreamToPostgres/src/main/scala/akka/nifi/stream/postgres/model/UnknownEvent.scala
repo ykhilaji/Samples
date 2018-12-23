@@ -12,7 +12,7 @@ object UnknownEvent extends SQLSyntaxSupport[UnknownEvent] {
 
   override def tableName: String = "unknown_event"
 
-  override def columns: Seq[String] = Seq("id, event_time", "value")
+  override def columns: Seq[String] = Seq("id", "event_time", "entity_id")
 
   def apply(id: Long = 0, eventTime: Option[LocalDateTime] = None, entityId: Long): UnknownEvent = new UnknownEvent(id, eventTime, entityId)
 

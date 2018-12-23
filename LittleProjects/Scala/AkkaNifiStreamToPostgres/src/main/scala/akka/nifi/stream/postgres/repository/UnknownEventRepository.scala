@@ -8,75 +8,58 @@ import scalikejdbc._
 class UnknownEventRepository extends SQLRepository[UnknownEvent, Long] {
   val alias = UnknownEvent.syntax("unknownEvent")
 
-  override def findOne(pk: Long): Reader[DBSession, OptionT[IO, UnknownEvent]] = Reader[DBSession, OptionT[IO, UnknownEvent]] {
-    implicit session => {
-      OptionT {
-        IO {
-          withSQL {
-            select(alias.resultAll).from(UnknownEvent as alias).where.eq(UnknownEvent.column.id, pk)
-          }.map(UnknownEvent(alias.resultName)(_)).single().apply()
-        }
-      }
-    }
-  }
-
-  override def findAll(): Reader[DBSession, IO[Seq[UnknownEvent]]] = Reader[DBSession, IO[Seq[UnknownEvent]]] {
-    implicit session => {
+  override def findOne(pk: Long)(implicit session: DBSession): OptionT[IO, UnknownEvent] =
+    OptionT {
       IO {
         withSQL {
-          select(alias.resultAll).from(UnknownEvent as alias)
-        }.map(UnknownEvent(alias.resultName)(_)).list().apply()
+          select(alias.resultAll).from(UnknownEvent as alias).where.eq(UnknownEvent.column.id, pk)
+        }.map(UnknownEvent(alias.resultName)(_)).single().apply()
       }
     }
-  }
 
-  def findAllByEntityId(entityId: Long): Reader[DBSession, IO[Seq[UnknownEvent]]] = Reader[DBSession, IO[Seq[UnknownEvent]]] {
-    implicit session => {
-      IO {
-        withSQL {
-          select(alias.resultAll).from(UnknownEvent as alias).where.eq(UnknownEvent.column.entityId, entityId)
-        }.map(UnknownEvent(alias.resultName)(_)).list().apply()
-      }
+  override def findAll()(implicit session: DBSession): IO[Seq[UnknownEvent]] =
+    IO {
+      withSQL {
+        select(alias.resultAll).from(UnknownEvent as alias)
+      }.map(UnknownEvent(alias.resultName)(_)).list().apply()
     }
-  }
 
-  override def delete(pk: Long): Reader[DBSession, IO[Unit]] = Reader[DBSession, IO[Unit]] {
-    implicit session => {
-      IO {
-        withSQL {
-          deleteFrom(UnknownEvent).where.eq(UnknownEvent.column.id, pk)
-        }.update().apply()
-      }
+  def findAllByEntityId(entityId: Long)(implicit session: DBSession): IO[Seq[UnknownEvent]] =
+    IO {
+      withSQL {
+        select(alias.resultAll).from(UnknownEvent as alias).where.eq(UnknownEvent.column.entityId, entityId)
+      }.map(UnknownEvent(alias.resultName)(_)).list().apply()
     }
-  }
 
-  override def save(e: UnknownEvent): Reader[DBSession, IO[UnknownEvent]] = Reader[DBSession, IO[UnknownEvent]] {
-    implicit session => {
-      IO {
-        val id = withSQL {
-          insert.into(UnknownEvent).namedValues(
-            UnknownEvent.column.eventTime -> e.eventTime,
-            UnknownEvent.column.entityId -> e.entityId
-          ).returning(UnknownEvent.column.id)
-        }.updateAndReturnGeneratedKey().apply()
-        e.copy(id = id)
-      }
+  override def delete(pk: Long)(implicit session: DBSession): IO[Unit] =
+    IO {
+      withSQL {
+        deleteFrom(UnknownEvent).where.eq(UnknownEvent.column.id, pk)
+      }.update().apply()
     }
-  }
 
-  override def update(e: UnknownEvent): Reader[DBSession, IO[UnknownEvent]] = Reader[DBSession, IO[UnknownEvent]] {
-    implicit session => {
-      IO {
-        withSQL {
-          QueryDSL.update(UnknownEvent).set(
-            UnknownEvent.column.eventTime -> e.eventTime,
-            UnknownEvent.column.entityId -> e.entityId
-          ).where.eq(UnknownEvent.column.id, e.id)
-        }
-        e
-      }
+  override def save(e: UnknownEvent)(implicit session: DBSession): IO[UnknownEvent] =
+    IO {
+      val id = withSQL {
+        insert.into(UnknownEvent).namedValues(
+          UnknownEvent.column.eventTime -> e.eventTime,
+          UnknownEvent.column.entityId -> e.entityId
+        ).returning(UnknownEvent.column.id)
+      }.updateAndReturnGeneratedKey().apply()
+      e.copy(id = id)
     }
-  }
+
+
+  override def update(e: UnknownEvent)(implicit session: DBSession): IO[UnknownEvent] =
+    IO {
+      withSQL {
+        QueryDSL.update(UnknownEvent).set(
+          UnknownEvent.column.eventTime -> e.eventTime,
+          UnknownEvent.column.entityId -> e.entityId
+        ).where.eq(UnknownEvent.column.id, e.id)
+      }
+      e
+    }
 }
 
 object UnknownEventRepository {
