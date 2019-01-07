@@ -10,6 +10,7 @@ val scalikeJdbcVersion = "3.3.0"
 val slickVersion = "3.2.0"
 val shapeless = "2.3.3"
 val doobieVersion = "0.6.0"
+val quillVersion = "2.6.0"
 
 resolvers ++= Seq(
   Resolver.sonatypeRepo("releases"),
@@ -84,5 +85,15 @@ lazy val doobie = (project in file("doobie"))
       "org.tpolecat" %% "doobie-postgres" % doobieVersion,
       "org.tpolecat" %% "doobie-specs2" % doobieVersion
 
+    )
+  )
+
+lazy val quill = (project in file("quill"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "org.postgresql" % "postgresql" % "42.2.5",
+      "io.getquill" %% "quill-jdbc" % quillVersion,
+      "io.getquill" %% "quill-cassandra" % quillVersion
     )
   )
