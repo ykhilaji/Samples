@@ -31,5 +31,10 @@
         <module>flume</module>
         <module>storm</module>
         <module>avro</module>
+        <module>cassandraachilles</module>
+        <module>guice</module>
+        <module>mongodb</module>
+        <module>flyway</module>
+        <module>jooq</module>
     </modules>
 </project>
