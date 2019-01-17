@@ -36,5 +36,6 @@
         <module>mongodb</module>
         <module>flyway</module>
         <module>jooq</module>
+        <module>jdbi</module>
     </modules>
 </project>
