@@ -18,5 +18,6 @@ libraryDependencies ++= Seq(
   "com.datastax.spark" %% "spark-cassandra-connector" % cassandraConnectorVersion,
   "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
   "org.apache.logging.log4j" % "log4j-core" % log4jVersion,
-  "org.apache.spark" %% "spark-streaming-kafka-0-10" % kafkaIntegrationVersion
+  "org.apache.spark" %% "spark-streaming-kafka-0-10" % kafkaIntegrationVersion,
+  "org.apache.spark" %% "spark-hive" % sparkVersion
 )

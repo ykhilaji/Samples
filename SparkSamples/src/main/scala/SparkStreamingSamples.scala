@@ -68,3 +68,29 @@ object SparkStreamingWindowAggregate extends App {
     .start()
     .awaitTermination()
 }
+
+object SparkStreamingKafkaSample extends App {
+  val spark = SparkSession
+    .builder()
+    .appName("kafka")
+    .master("local[2]")
+    .getOrCreate()
+
+  spark.sparkContext.setLogLevel("ERROR")
+  import spark.implicits._
+
+  // read messages from kafka topic
+  val input = spark
+    .readStream
+    .format("kafka")
+    .option("kafka.bootstrap.servers", "localhost:9092")
+    .option("subscribe", "nifi")
+    .load()
+    .selectExpr("CAST(key as string)", "CAST(value as string)")
+    .as[(String, String)]
+    .writeStream
+    .format("console")
+    .outputMode("append")
+    .start()
+    .awaitTermination()
+}
