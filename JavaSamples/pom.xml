@@ -38,5 +38,6 @@
         <module>jooq</module>
         <module>jdbi</module>
         <module>hive</module>
+        <module>aerospike</module>
     </modules>
 </project>
