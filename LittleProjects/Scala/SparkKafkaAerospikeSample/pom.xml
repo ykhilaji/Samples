@@ -24,21 +24,13 @@
         <spark>2.4.0</spark>
         <aerospike>4.3.1</aerospike>
         <config>1.3.3</config>
-        <avro>1.8.2</avro>
-        <kafka-avro-serializer>4.1.0</kafka-avro-serializer>
         <testcontainers>0.23.0</testcontainers>
         <scalatest>3.0.6</scalatest>
         <junit>5.4.0</junit>
         <logger>2.11.2</logger>
         <jackson>2.6.5</jackson>
+        <avro4s>2.0.2</avro4s>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>confluent</id>
-            <url>http://packages.confluent.io/maven/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
@@ -68,14 +60,9 @@
             <version>${logger}</version>
         </dependency>
         <dependency>
-            <groupId>io.confluent</groupId>
-            <artifactId>kafka-avro-serializer</artifactId>
-            <version>${kafka-avro-serializer}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.avro</groupId>
-            <artifactId>avro</artifactId>
-            <version>${avro}</version>
+            <groupId>com.sksamuel.avro4s</groupId>
+            <artifactId>avro4s-core_2.11</artifactId>
+            <version>${avro4s}</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
