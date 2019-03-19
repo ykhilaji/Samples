@@ -39,5 +39,6 @@
         <module>jdbi</module>
         <module>hive</module>
         <module>aerospike</module>
+        <module>hbase</module>
     </modules>
 </project>
