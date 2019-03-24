@@ -37,5 +37,6 @@
         <module>flyway</module>
         <module>jooq</module>
         <module>jdbi</module>
+        <module>neo4j</module>
     </modules>
 </project>
