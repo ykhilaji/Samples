@@ -37,6 +37,7 @@
         <module>flyway</module>
         <module>jooq</module>
         <module>jdbi</module>
+        <module>neo4j</module>
         <module>hive</module>
         <module>aerospike</module>
         <module>hbase</module>
