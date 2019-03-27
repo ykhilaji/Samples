@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  postgres:
+    image: 'postgres:latest'
+    hostname: 'postgres-compose'
+    container_name: 'postgres-compose'
+    ports:
+      - '5432:5432'
+  grafana:
+    image: 'grafana/grafana:6.0.2'
+    hostname: 'grafana-compose'
+    container_name: 'grafana-compose'
+    depends_on:
+      - postgres
+    ports:
+      - '3000:3000'
