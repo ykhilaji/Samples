@@ -25,6 +25,7 @@
 
     <properties>
         <infispan>9.1.7.Final</infispan>
+        <postgres>42.2.1</postgres>
         <junit>4.12</junit>
     </properties>
 
@@ -39,6 +40,11 @@
             <artifactId>junit</artifactId>
             <version>${junit}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres}</version>
         </dependency>
     </dependencies>
 

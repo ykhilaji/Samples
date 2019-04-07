@@ -11,6 +11,9 @@ val slickVersion = "3.2.0"
 val shapeless = "2.3.3"
 val doobieVersion = "0.6.0"
 val quillVersion = "2.6.0"
+val fs2Version = "1.0.4"
+val apacheCommonIoVersion = "2.6"
+val rxScalaVersion = "0.26.5"
 
 resolvers ++= Seq(
   Resolver.sonatypeRepo("releases"),
@@ -20,6 +23,7 @@ resolvers ++= Seq(
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.slf4j" % "slf4j-simple" % "1.7.+",
+    "org.scala-lang.modules" %% "scala-xml" % "1.1.1",
     "org.scalatest" % "scalatest_2.12" % scalaTestVersion % Test
   )
 )
@@ -95,5 +99,24 @@ lazy val quill = (project in file("quill"))
       "org.postgresql" % "postgresql" % "42.2.5",
       "io.getquill" %% "quill-jdbc" % quillVersion,
       "io.getquill" %% "quill-cassandra" % quillVersion
+    )
+  )
+
+lazy val fs2 = (project in file("fs2"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "co.fs2" %% "fs2-core" % fs2Version,
+      "co.fs2" %% "fs2-io" % fs2Version,
+      "com.spinoco" %% "fs2-cassandra" % "0.4.0"
+    )
+  )
+
+lazy val reactive = (project in file("reactive"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "io.reactivex" %% "rxscala" % rxScalaVersion,
+      "commons-io" % "commons-io" % apacheCommonIoVersion
     )
   )
