@@ -20,11 +20,15 @@ resolvers ++= Seq(
   Resolver.sonatypeRepo("snapshots")
 )
 
+// for fs2 kafka
+scalacOptions += "-Ypartial-unification"
+
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.slf4j" % "slf4j-simple" % "1.7.+",
     "org.scala-lang.modules" %% "scala-xml" % "1.1.1",
-    "org.scalatest" % "scalatest_2.12" % scalaTestVersion % Test
+    "org.scalatest" % "scalatest_2.12" % scalaTestVersion % Test,
+    "com.dimafeng" %% "testcontainers-scala" % "0.24.0" % Test
   )
 )
 
@@ -108,7 +112,8 @@ lazy val fs2 = (project in file("fs2"))
     libraryDependencies ++= Seq(
       "co.fs2" %% "fs2-core" % fs2Version,
       "co.fs2" %% "fs2-io" % fs2Version,
-      "com.spinoco" %% "fs2-cassandra" % "0.4.0"
+      "com.spinoco" %% "fs2-cassandra" % "0.4.0",
+      "com.ovoenergy" %% "fs2-kafka" % "0.19.9"
     )
   )
 
