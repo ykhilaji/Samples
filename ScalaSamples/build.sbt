@@ -125,3 +125,11 @@ lazy val reactive = (project in file("reactive"))
       "commons-io" % "commons-io" % apacheCommonIoVersion
     )
   )
+
+lazy val stm = (project in file("stm"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "org.scala-stm" %% "scala-stm" % "0.9"
+    )
+  )
