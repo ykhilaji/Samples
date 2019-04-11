@@ -27,9 +27,13 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.slf4j" % "slf4j-simple" % "1.7.+",
     "org.scala-lang.modules" %% "scala-xml" % "1.1.1",
+    "com.storm-enroute" %% "scalameter" % "0.17" % Test,
     "org.scalatest" % "scalatest_2.12" % scalaTestVersion % Test,
     "com.dimafeng" %% "testcontainers-scala" % "0.24.0" % Test
-  )
+  ),
+  testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
+  logBuffered := false,
+  parallelExecution in Test := false
 )
 
 lazy val slickSamples = (project in file("slick"))
@@ -131,5 +135,13 @@ lazy val stm = (project in file("stm"))
     commonSettings,
     libraryDependencies ++= Seq(
       "org.scala-stm" %% "scala-stm" % "0.9"
+    )
+  )
+
+lazy val scalameter = (project in file("scalameter"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+
     )
   )
