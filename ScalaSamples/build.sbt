@@ -142,6 +142,8 @@ lazy val scalameter = (project in file("scalameter"))
   .settings(
     commonSettings,
     libraryDependencies ++= Seq(
-
+      "net.debasishg" %% "redisclient" % "3.9",
+      "com.github.scredis" %% "scredis" % "2.2.4",
+      "io.monix" %% "shade" % "1.10.0"
     )
   )
