@@ -145,6 +145,12 @@ lazy val scalameter = (project in file("scalameter"))
       "net.debasishg" %% "redisclient" % "3.9",
       "com.github.scredis" %% "scredis" % "2.2.4",
       "io.monix" %% "shade" % "1.10.0",
-      "org.postgresql" % "postgresql" % "42.2.5"
+      "org.postgresql" % "postgresql" % "42.2.5",
+      "io.spray" %%  "spray-json" % "1.3.5",
+      "io.circe" %% "circe-core" % "0.11.1",
+      "io.circe" %% "circe-generic" % "0.11.1",
+      "io.circe" %% "circe-parser" % "0.11.1",
+      "org.json4s" %% "json4s-native" % "3.6.5",
+      "org.json4s" %% "json4s-jackson" % "3.6.5"
     )
   )

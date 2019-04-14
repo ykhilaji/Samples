@@ -1,18 +1,28 @@
-import akka.actor.ActorSystem
-import org.scalameter.api._
+package redis
 
+import akka.actor.ActorSystem
+import org.scalameter.api.{Bench, Gen}
+import scredis.Client
+import org.scalameter.api._
 import scala.concurrent.duration._
-import scredis._
 
 import scala.concurrent.{Await, Future}
 
-// Parameters(records -> 100000): 149.133367 ms
+/**
+  * cores: 4
+  * name: Java HotSpot(TM) 64-Bit Server VM
+  * osArch: amd64
+  * osName: Windows 7
+  * vendor: Oracle Corporation
+  * version: 25.131-b11
+  */
 object ScRedisMeasurement extends Bench.LocalTime {
   var system: ActorSystem = _
   var client: Client = _
   val gen = Gen.exponential("records")(100, 1000000, 100)
 
   performance of "redis client" in {
+    // Parameters(records -> 100000): 149.133367 ms
     measure method "set" in {
       using(gen) config {
         exec.maxWarmupRuns -> 1

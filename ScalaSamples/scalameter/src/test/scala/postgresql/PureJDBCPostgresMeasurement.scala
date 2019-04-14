@@ -1,10 +1,19 @@
+package postgresql
+
 import java.sql.{Connection, DriverManager, PreparedStatement}
 
 import org.scalameter.api._
 
 import scala.util.Random
 
-
+/**
+  * cores: 4
+  * name: Java HotSpot(TM) 64-Bit Server VM
+  * osArch: amd64
+  * osName: Windows 7
+  * vendor: Oracle Corporation
+  * version: 25.131-b11
+  */
 object PureJDBCPostgresMeasurement extends Bench.LocalTime {
   val URL = "jdbc:postgresql://192.168.99.100:5432/postgres"
   val USER = "postgres"

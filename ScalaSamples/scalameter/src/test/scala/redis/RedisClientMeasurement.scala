@@ -1,6 +1,16 @@
-import org.scalameter.api._
-import com.redis._
+package redis
 
+import com.redis.RedisClientPool
+import org.scalameter.api._
+
+/**
+  * cores: 4
+  * name: Java HotSpot(TM) 64-Bit Server VM
+  * osArch: amd64
+  * osName: Windows 7
+  * vendor: Oracle Corporation
+  * version: 25.131-b11
+  */
 //10000 records > 20 seconds [???]
 object RedisClientMeasurement extends Bench.LocalTime {
   var client: RedisClientPool = _

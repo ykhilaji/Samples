@@ -1,11 +1,22 @@
+package memcached
+
 import org.scalameter.api._
-import shade.memcached._
+import org.scalameter.api.{Bench, Gen}
+import shade.memcached.{Configuration, Memcached}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import concurrent.duration._
-import concurrent.{Await, Future}
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
+/**
+  * cores: 4
+  * name: Java HotSpot(TM) 64-Bit Server VM
+  * osArch: amd64
+  * osName: Windows 7
+  * vendor: Oracle Corporation
+  * version: 25.131-b11
+  */
 object ShadeMemcachedMeasurement extends Bench.LocalTime {
   var memcached: Memcached = _
   val gen = Gen.exponential("records")(100, 10000, 100)
