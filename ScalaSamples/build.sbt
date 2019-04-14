@@ -151,6 +151,7 @@ lazy val scalameter = (project in file("scalameter"))
       "io.circe" %% "circe-generic" % "0.11.1",
       "io.circe" %% "circe-parser" % "0.11.1",
       "org.json4s" %% "json4s-native" % "3.6.5",
-      "org.json4s" %% "json4s-jackson" % "3.6.5"
+      "org.json4s" %% "json4s-jackson" % "3.6.5",
+      "mysql" % "mysql-connector-java" % "8.0.15",
     )
   )
