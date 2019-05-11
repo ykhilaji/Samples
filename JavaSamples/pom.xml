@@ -43,5 +43,6 @@
         <module>hbase</module>
         <module>influxdb</module>
         <module>thrift</module>
+        <module>lucene</module>
     </modules>
 </project>
