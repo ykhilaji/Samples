@@ -5,15 +5,10 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -33,13 +28,19 @@ import java.util.stream.Collectors;
 
 public class BasicUsageSample {
     public static void main(String[] args) throws IOException, ParseException {
-//        Indexer indexer = new Indexer(Paths.get("lucene", "index"));
-//        indexer.indexFiles(Paths.get("lucene", "data"));
-//        indexer.close();
+        Indexer indexer = new Indexer(Paths.get("lucene", "index"));
+        indexer.indexFiles(Paths.get("lucene", "data"));
+        indexer.close();
 
         Searcher searcher = new Searcher(Paths.get("lucene", "index"));
-        // list documents contains word fact
-        searcher.search("fact", 10).forEach(doc -> System.out.println(String.format("Document: %s", doc.get("fileName"))));
+
+        searcher.search("fact", 10).forEach(doc -> System.out.println(String.format("Search: %s", doc.get("fileName"))));
+        searcher.searchUsingTermQuery("fact", 10).forEach(doc -> System.out.println(String.format("Term query: %s", doc.get("fileName"))));
+        searcher.searchUsingWildcardQuery("ch?nk", 10).forEach(doc -> System.out.println(String.format("Wildcard query: %s", doc.get("fileName"))));
+        searcher.searchUsingBooleanQuery("fact", "popular", 1, 10).forEach(doc -> System.out.println(String.format("Boolean query: %s", doc.get("fileName"))));
+        searcher.searchUsingPhraseQuery("If you are going to", 10).forEach(doc -> System.out.println(String.format("Phrase query: %s", doc.get("fileName"))));
+        searcher.searchUsingPrefixQuery("pas", 10).forEach(doc -> System.out.println(String.format("Prefix query: %s", doc.get("fileName"))));
+
         searcher.close();
     }
 
@@ -58,16 +59,66 @@ public class BasicUsageSample {
             this.indexSearcher = new IndexSearcher(this.indexReader);
             this.analyzer = new StandardAnalyzer();
             this.queryParser = new QueryParser(BODY, this.analyzer);
+
+
         }
 
         public void close() throws IOException {
             this.indexReader.close();
         }
 
-        public List<Document> search(String queryString, int hits) throws ParseException, IOException {
+        public List<Document> search(String queryString, int documents) throws ParseException, IOException {
             Query query = this.queryParser.parse(queryString);
-            TopDocs topDocs = this.indexSearcher.search(query, hits);
+            TopDocs topDocs = this.indexSearcher.search(query, documents);
 
+            return fromTopDocs(topDocs);
+        }
+
+        public List<Document> searchUsingTermQuery(String word, int documents) throws IOException {
+            Query query = new TermQuery(new Term(BODY, word));
+            TopDocs topDocs =  this.indexSearcher.search(query, documents);
+
+            return fromTopDocs(topDocs);
+        }
+
+        public List<Document> searchUsingWildcardQuery(String word, int documents) throws IOException {
+            Query query = new WildcardQuery(new Term(BODY, word));
+            TopDocs topDocs =  this.indexSearcher.search(query, documents);
+
+            return fromTopDocs(topDocs);
+        }
+
+        public List<Document> searchUsingBooleanQuery(String first, String second, int minClauses, int documents) throws IOException {
+            Query query = new BooleanQuery.Builder()
+                    .setMinimumNumberShouldMatch(minClauses)
+                    .add(new TermQuery(new Term(BODY, first)), BooleanClause.Occur.SHOULD)
+                    .add(new TermQuery(new Term(BODY, second)), BooleanClause.Occur.SHOULD)
+                    .build();
+            TopDocs topDocs =  this.indexSearcher.search(query, documents);
+
+            return fromTopDocs(topDocs);
+        }
+
+        public List<Document> searchUsingPhraseQuery(String phrase, int documents) throws IOException {
+            final PhraseQuery.Builder builder = new PhraseQuery.Builder();
+
+            Arrays.stream(phrase.split("\\s+")).forEach(token -> builder.add(new Term(BODY, token)));
+
+            Query query = builder.build();
+            TopDocs topDocs =  this.indexSearcher.search(query, documents);
+
+            return fromTopDocs(topDocs);
+        }
+
+
+        public List<Document> searchUsingPrefixQuery(String prefix, int documents) throws IOException {
+            Query query = new PrefixQuery(new Term(BODY, prefix));
+            TopDocs topDocs =  this.indexSearcher.search(query, documents);
+
+            return fromTopDocs(topDocs);
+        }
+
+        private List<Document> fromTopDocs(TopDocs topDocs) {
             return Arrays.stream(topDocs.scoreDocs)
                     .map(scoreDoc -> {
                         try {
@@ -120,6 +171,8 @@ public class BasicUsageSample {
         public void indexFile(Path path) throws IOException {
             Document document = createDocument(Files.newInputStream(path, StandardOpenOption.READ), path.getFileName().toString());
             indexWriter.addDocument(document);
+            // commit after each file
+            indexWriter.commit();
         }
 
         private Document createDocument(InputStream stream, String fileName) {
