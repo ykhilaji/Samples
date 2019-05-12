@@ -191,12 +191,14 @@ class IndexerSearcher {
     private Directory indexDirectory;
     private IndexWriter indexWriter;
     private StandardAnalyzer analyzer;
+    private DirectoryReader indexReader;
 
     public IndexerSearcher(Path indexDirectoryPath) throws IOException {
         this.indexDirectory = FSDirectory.open(indexDirectoryPath);
         this.analyzer = new StandardAnalyzer();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         this.indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
+        this.indexReader = DirectoryReader.open(this.indexWriter);
     }
 
     public void close() throws IOException {
@@ -238,20 +240,14 @@ class IndexerSearcher {
     }
 
     public List<Document> searchUsingWildcardQuery(String word, int documents) throws IOException {
-        DirectoryReader indexReader = null;
-        try {
-            indexReader = DirectoryReader.open(indexWriter);
-            IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+        indexReader = DirectoryReader.openIfChanged(indexReader);
+        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
 
-            Query query = new WildcardQuery(new Term(BODY, word));
-            TopDocs topDocs = indexSearcher.search(query, documents);
+        Query query = new WildcardQuery(new Term(BODY, word));
+        TopDocs topDocs = indexSearcher.search(query, documents);
 
-            return fromTopDocs(topDocs, indexSearcher);
-        } finally {
-            if (indexReader != null) {
-                indexReader.close();
-            }
-        }
+        return fromTopDocs(topDocs, indexSearcher);
+
     }
 
     private List<Document> fromTopDocs(TopDocs topDocs, final IndexSearcher indexSearcher) {
