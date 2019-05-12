@@ -191,17 +191,12 @@ class IndexerSearcher {
     private Directory indexDirectory;
     private IndexWriter indexWriter;
     private StandardAnalyzer analyzer;
-    private IndexReader indexReader;
-    private IndexSearcher indexSearcher;
 
     public IndexerSearcher(Path indexDirectoryPath) throws IOException {
         this.indexDirectory = FSDirectory.open(indexDirectoryPath);
         this.analyzer = new StandardAnalyzer();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         this.indexWriter = new IndexWriter(indexDirectory, indexWriterConfig);
-
-        this.indexReader = DirectoryReader.open(this.indexWriter);
-        this.indexSearcher = new IndexSearcher(this.indexReader);
     }
 
     public void close() throws IOException {
@@ -243,17 +238,27 @@ class IndexerSearcher {
     }
 
     public List<Document> searchUsingWildcardQuery(String word, int documents) throws IOException {
-        Query query = new WildcardQuery(new Term(BODY, word));
-        TopDocs topDocs =  this.indexSearcher.search(query, documents);
+        DirectoryReader indexReader = null;
+        try {
+            indexReader = DirectoryReader.open(indexWriter);
+            IndexSearcher indexSearcher = new IndexSearcher(indexReader);
 
-        return fromTopDocs(topDocs);
+            Query query = new WildcardQuery(new Term(BODY, word));
+            TopDocs topDocs = indexSearcher.search(query, documents);
+
+            return fromTopDocs(topDocs, indexSearcher);
+        } finally {
+            if (indexReader != null) {
+                indexReader.close();
+            }
+        }
     }
 
-    private List<Document> fromTopDocs(TopDocs topDocs) {
+    private List<Document> fromTopDocs(TopDocs topDocs, final IndexSearcher indexSearcher) {
         return Arrays.stream(topDocs.scoreDocs)
                 .map(scoreDoc -> {
                     try {
-                        return Optional.of(this.indexSearcher.doc(scoreDoc.doc));
+                        return Optional.of(indexSearcher.doc(scoreDoc.doc));
                     } catch (IOException e) {
                         System.err.println(e.getLocalizedMessage());
                         return Optional.<Document>empty();
