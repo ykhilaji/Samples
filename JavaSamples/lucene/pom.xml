@@ -25,6 +25,9 @@
 
     <properties>
         <lucene>8.0.0</lucene>
+        <commons-io>2.6</commons-io>
+        <rxjava>2.2.8</rxjava>
+        <junit>5.3.1</junit>
     </properties>
 
 
@@ -40,9 +43,19 @@
             <version>${lucene}</version>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.reactivex.rxjava2</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>${rxjava}</version>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.3.1</version>
+            <version>${junit}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

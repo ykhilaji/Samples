@@ -59,8 +59,6 @@ public class BasicUsageSample {
             this.indexSearcher = new IndexSearcher(this.indexReader);
             this.analyzer = new StandardAnalyzer();
             this.queryParser = new QueryParser(BODY, this.analyzer);
-
-
         }
 
         public void close() throws IOException {
