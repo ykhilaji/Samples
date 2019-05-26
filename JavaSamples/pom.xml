@@ -44,5 +44,6 @@
         <module>influxdb</module>
         <module>thrift</module>
         <module>lucene</module>
+        <module>janino</module>
     </modules>
 </project>
