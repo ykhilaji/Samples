@@ -45,5 +45,6 @@
         <module>thrift</module>
         <module>lucene</module>
         <module>janino</module>
+        <module>antlr4</module>
     </modules>
 </project>
