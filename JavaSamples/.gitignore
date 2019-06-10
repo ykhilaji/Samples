@@ -29,3 +29,5 @@ target/*
 hs_err_pid*
 
 generated-sources/
+data/
+index/
