@@ -32,39 +32,39 @@ public class MultipleStreamsFromSingleSpout {
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("Test", config, builder.createTopology());
     }
-}
 
-class SpoutWithMultipleStreams extends BaseRichSpout {
-    private Random random;
-    private SpoutOutputCollector outputCollector;
+    static class SpoutWithMultipleStreams extends BaseRichSpout {
+        private Random random;
+        private SpoutOutputCollector outputCollector;
 
-    public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
-        this.random = new Random();
-        this.outputCollector = spoutOutputCollector;
-    }
+        public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
+            this.random = new Random();
+            this.outputCollector = spoutOutputCollector;
+        }
 
-    public void nextTuple() {
-        Utils.sleep(1000);
-        this.outputCollector.emit("first", new Values(random.nextInt(100)));
-        this.outputCollector.emit("second", new Values(System.currentTimeMillis()));
-    }
+        public void nextTuple() {
+            Utils.sleep(1000);
+            this.outputCollector.emit("first", new Values(random.nextInt(100)));
+            this.outputCollector.emit("second", new Values(System.currentTimeMillis()));
+        }
 
-    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declareStream("first", new Fields("nextInt"));
-        outputFieldsDeclarer.declareStream("second", new Fields("timestamp"));
-    }
-}
-
-class BoltConsumingMultipleStreams extends BaseBasicBolt {
-    public void execute(Tuple input, BasicOutputCollector collector) {
-        if ("first".equals(input.getSourceStreamId())) {
-            System.out.println(String.format("Next int: %d", input.getIntegerByField("nextInt")));
-        } else {
-            System.out.println(String.format("Timestamp: %d", input.getLongByField("timestamp")));
+        public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
+            outputFieldsDeclarer.declareStream("first", new Fields("nextInt"));
+            outputFieldsDeclarer.declareStream("second", new Fields("timestamp"));
         }
     }
 
-    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+    static class BoltConsumingMultipleStreams extends BaseBasicBolt {
+        public void execute(Tuple input, BasicOutputCollector collector) {
+            if ("first".equals(input.getSourceStreamId())) {
+                System.out.println(String.format("Next int: %d", input.getIntegerByField("nextInt")));
+            } else {
+                System.out.println(String.format("Timestamp: %d", input.getLongByField("timestamp")));
+            }
+        }
 
+        public void declareOutputFields(OutputFieldsDeclarer declarer) {
+
+        }
     }
 }

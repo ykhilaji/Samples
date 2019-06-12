@@ -31,57 +31,57 @@ public class AckUsageSample {
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("Test", config, builder.createTopology());
     }
-}
 
-class SproutRequiredAck extends BaseRichSpout {
-    private Random random;
-    private SpoutOutputCollector outputCollector;
+    static class SproutRequiredAck extends BaseRichSpout {
+        private Random random;
+        private SpoutOutputCollector outputCollector;
 
-    public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
-        this.random = new Random();
-        this.outputCollector = spoutOutputCollector;
-    }
+        public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
+            this.random = new Random();
+            this.outputCollector = spoutOutputCollector;
+        }
 
-    public void nextTuple() {
-        Utils.sleep(1000);
-        this.outputCollector.emit(new Values(random.nextInt(100)), "id");
-    }
+        public void nextTuple() {
+            Utils.sleep(1000);
+            this.outputCollector.emit(new Values(random.nextInt(100)), "id");
+        }
 
-    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("nextInt"));
-    }
+        public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
+            outputFieldsDeclarer.declare(new Fields("nextInt"));
+        }
 
-    @Override
-    public void ack(Object msgId) {
-        System.out.println(String.format("Success: %s", msgId));
-    }
+        @Override
+        public void ack(Object msgId) {
+            System.out.println(String.format("Success: %s", msgId));
+        }
 
-    @Override
-    public void fail(Object msgId) {
-        System.out.println(String.format("Fail: %s", msgId));
-    }
-}
-
-class BoltWithAckConfirmation extends BaseRichBolt {
-    private OutputCollector outputCollector;
-
-    public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
-        this.outputCollector = collector;
-    }
-
-    public void execute(Tuple input) {
-        int val = input.getIntegerByField("nextInt");
-
-        if (val % 2 != 0) {
-            System.out.println("OK");
-            outputCollector.ack(input);
-        } else {
-            System.out.println("NOT OK");
-            outputCollector.fail(input);
+        @Override
+        public void fail(Object msgId) {
+            System.out.println(String.format("Fail: %s", msgId));
         }
     }
 
-    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+    static class BoltWithAckConfirmation extends BaseRichBolt {
+        private OutputCollector outputCollector;
 
+        public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
+            this.outputCollector = collector;
+        }
+
+        public void execute(Tuple input) {
+            int val = input.getIntegerByField("nextInt");
+
+            if (val % 2 != 0) {
+                System.out.println("OK");
+                outputCollector.ack(input);
+            } else {
+                System.out.println("NOT OK");
+                outputCollector.fail(input);
+            }
+        }
+
+        public void declareOutputFields(OutputFieldsDeclarer declarer) {
+
+        }
     }
 }

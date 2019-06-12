@@ -31,35 +31,35 @@ public class BasicUsageSample {
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("Test", config, builder.createTopology());
     }
-}
 
-// BaseRichSpout -> IRichSpout extends ISpout implements IComponent
-class TestSpout extends BaseRichSpout {
-    private Random random;
-    private SpoutOutputCollector outputCollector;
+    // BaseRichSpout -> IRichSpout extends ISpout implements IComponent
+    static class TestSpout extends BaseRichSpout {
+        private Random random;
+        private SpoutOutputCollector outputCollector;
 
-    public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
-        this.random = new Random();
-        this.outputCollector = spoutOutputCollector;
+        public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
+            this.random = new Random();
+            this.outputCollector = spoutOutputCollector;
+        }
+
+        public void nextTuple() {
+            Utils.sleep(1000);
+            this.outputCollector.emit(new Values(random.nextInt(100)));
+        }
+
+        public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
+            outputFieldsDeclarer.declare(new Fields("nextInt"));
+        }
     }
 
-    public void nextTuple() {
-        Utils.sleep(1000);
-        this.outputCollector.emit(new Values(random.nextInt(100)));
-    }
+    // BaseBasicBolt extends IBasicBolt implements IComponent
+    static class TestBolt extends BaseBasicBolt {
+        public void execute(Tuple input, BasicOutputCollector collector) {
+            System.out.println(String.format("Next int: %d", input.getIntegerByField("nextInt")));
+        }
 
-    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("nextInt"));
-    }
-}
+        public void declareOutputFields(OutputFieldsDeclarer declarer) {
 
-// BaseBasicBolt extends IBasicBolt implements IComponent
-class TestBolt extends BaseBasicBolt {
-    public void execute(Tuple input, BasicOutputCollector collector) {
-        System.out.println(String.format("Next int: %d", input.getIntegerByField("nextInt")));
-    }
-
-    public void declareOutputFields(OutputFieldsDeclarer declarer) {
-
+        }
     }
 }
