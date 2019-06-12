@@ -47,5 +47,6 @@
         <module>janino</module>
         <module>antlr4</module>
         <module>core</module>
+        <module>micrometer</module>
     </modules>
 </project>
