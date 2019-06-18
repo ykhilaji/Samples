@@ -10,9 +10,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>camel</artifactId>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <properties>
-        <camel>2.21.0</camel>
+        <camel>2.24.0</camel>
         <infispan>9.1.7.Final</infispan>
         <slf4j>1.7.25</slf4j>
     </properties>
@@ -22,6 +34,12 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
             <version>${camel}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>spi-annotations</artifactId>
+            <version>${camel}</version>
+            <!--<scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
