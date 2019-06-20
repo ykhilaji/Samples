@@ -1,0 +1,16 @@
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus:v2.9.2
+    hostname: prometheus
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - /Users/grifon/WORK/Samples/SystemSamples/Kafka/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  grafana:
+    image: grafana/grafana:6.0.2
+    hostname: grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
