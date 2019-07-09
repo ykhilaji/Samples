@@ -1,0 +1,19 @@
+version: '3'
+services:
+  master:
+    image: 'redis:5.0'
+    hostname: 'master'
+    container_name: 'master'
+    ports:
+      - '6379:6379'
+  slave:
+    image: 'redis:5.0'
+    hostname: 'slave'
+    container_name: 'slave'
+    depends_on: 
+      - master
+    ports:
+      - '6380:6379'
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - './slave.conf:/usr/local/etc/redis/redis.conf'

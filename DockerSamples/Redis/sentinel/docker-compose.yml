@@ -1,0 +1,55 @@
+version: '3'
+services:
+  master:
+    image: 'redis:5.0'
+    container_name: 'master'
+    hostname: 'master'
+    ports:
+      - '6379:6379'
+  slave:
+    image: 'redis:5.0'
+    depends_on: 
+      - master
+    container_name: 'slave'
+    hostname: 'slave'
+    ports:
+      - '6380:6379'
+    volumes:
+      - './slave.conf:/usr/local/etc/redis/redis.conf'
+    command: redis-server /usr/local/etc/redis/redis.conf
+  sentinel1:
+    image: 'redis:5.0'
+    depends_on: 
+      - master
+      - slave
+    container_name: 'sentinel1'
+    hostname: 'sentinel1'
+    ports:
+      - '6381:6379'
+    volumes:
+      - './sentinel1.conf:/usr/local/etc/redis/sentinel.conf'
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+  sentinel2:
+    image: 'redis:5.0'
+    depends_on: 
+      - master
+      - slave
+    container_name: 'sentinel2'
+    hostname: 'sentinel2'
+    ports:
+      - '6382:6379'
+    volumes:
+      - './sentinel2.conf:/usr/local/etc/redis/sentinel.conf'
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+  sentinel3:
+    image: 'redis:5.0'
+    depends_on: 
+      - master
+      - slave
+    container_name: 'sentinel3'
+    hostname: 'sentinel3'
+    ports:
+      - '6383:6379'
+    volumes:
+      - './sentinel3.conf:/usr/local/etc/redis/sentinel.conf'
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
