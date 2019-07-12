@@ -1,0 +1,97 @@
+apply plugin: 'java'
+apply plugin: 'com.commercehub.gradle.plugin.avro'
+apply plugin: 'antlr'
+
+group 'com.github.gr1f0n6x'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.commercehub.gradle.plugin:gradle-avro-plugin:0.14.1'
+    }
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+configurations {
+    compile {
+        extendsFrom = extendsFrom.findAll { it != configurations.antlr }
+    }
+}
+
+dependencies {
+    constraints {
+        antlr group: 'org.antlr', name: 'antlr4', version: '4.7.1'
+        compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.7.1'
+
+        compile group: 'org.apache.avro', name: 'avro', version: '1.9.0'
+        compile group: 'org.apache.avro', name: 'avro-ipc-netty', version: '1.9.0'
+
+        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.12.0'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.0'
+
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.0'
+    }
+
+    antlr group: 'org.antlr', name: 'antlr4'
+    compile group: 'org.antlr', name: 'antlr4-runtime'
+
+    compile group: 'org.apache.avro', name: 'avro'
+    compile group: 'org.apache.avro', name: 'avro-ipc-netty'
+
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core'
+
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api'
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+compileTestJava.options.encoding = 'UTF-8'
+
+generateGrammarSource {
+    maxHeapSize = '64m'
+    arguments += ['-visitor', '-long-messages', '-package', 'avro.calculator.rpc']
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+compileJava {
+    dependsOn generateGrammarSource
+    dependsOn generateAvroProtocol
+}
+
+compileTestJava {
+    dependsOn generateGrammarSource
+    dependsOn generateAvroProtocol
+}
+
+sourceSets {
+    generated {
+        java.srcDir '${buildDir}/avro/calculator/rpc'
+    }
+}
+
+compileJava.source sourceSets.generated.java
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'AvroCalculatorRpc',
+                'Implementation-Version': version,
+                'Main-Class': 'avro.calculator.rpc.AvroCalculatorRpc'
+    }
+    
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

@@ -1,0 +1,15 @@
+@namespace("avro.calculator.rpc")
+protocol Calculator {
+ record Request {
+    string query;
+ }
+
+  record Response {
+    string query;
+    double result;
+  }
+
+ error IncorrectQuery {}
+
+ Response task(Request request) throws IncorrectQuery;
+}
