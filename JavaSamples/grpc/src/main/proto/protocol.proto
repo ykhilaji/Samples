@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package grpc;
+
+service Service {
+    rpc Task (Request) returns (Response);
+    rpc ping (Empty) returns (Empty);
+}
+
+message Request {
+    sint64 id = 1;
+    string body = 2;
+}
+
+message Response {
+    sint64 id = 1;
+    string body = 2;
+}
+
+message Empty {}

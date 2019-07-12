@@ -48,5 +48,7 @@
         <module>antlr4</module>
         <module>core</module>
         <module>micrometer</module>
+        <module>protobuf</module>
+        <module>grpc</module>
     </modules>
 </project>

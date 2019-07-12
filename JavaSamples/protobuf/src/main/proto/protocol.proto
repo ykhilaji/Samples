@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package protobufSample;
+
+option java_package = "protobuf";
+option java_outer_classname = "Protocol";
+
+message Request {
+    string body = 1;
+    sint64 id = 2;
+    string extra = 3;
+}
+
+message Response {
+    string body = 1;
+    sint64 id = 2;
+    string extra = 3;
+}
