@@ -1,0 +1,38 @@
+{"namespace": "avro.sample.avpr",
+ "protocol": "JSONFormatTest",
+
+ "types": [
+     {"name": "Request", "type": "record",
+      "fields": [
+          {"name": "id",   "type": "long"},
+          {"name": "extra", "type": ["null", "string"]},
+          {"name": "body", "type": "string"}
+      ]
+     },
+      {"name": "Response", "type": "record",
+       "fields": [
+           {"name": "id",   "type": "long"},
+           {"name": "extra", "type": ["null", "string"]},
+           {"name": "body", "type": "string"}
+       ]
+      },
+       {"name": "SomeError", "type": "error", "fields": [
+           {"name": "explanation", "type": "string"},
+           {"name": "result_code", "type": "int", "default": -1}
+        ]
+       }
+ ],
+
+ "messages": {
+     "task": {
+         "request": [{"name": "request", "type": "Request"}],
+         "response": "Response",
+         "errors": ["SomeError"]
+     },
+     "ping": {
+         "request": [],
+         "response": "null",
+         "one-way": true
+     }
+ }
+}

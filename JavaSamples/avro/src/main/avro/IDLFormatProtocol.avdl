@@ -1,0 +1,22 @@
+@namespace("avro.sample.avdl")
+protocol IDLFormatTest {
+ record Request {
+   long id;
+   string body;
+   union {null, string} extra;
+ }
+
+  record Response {
+    long id;
+    string body;
+    union {null, string} extra;
+  }
+
+ error SomeError {
+   string explanation;
+   int result_code = -1;
+ }
+
+ Response task(Request request) throws SomeError;
+ void ping() oneway;
+}

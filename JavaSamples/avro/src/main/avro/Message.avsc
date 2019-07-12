@@ -1,0 +1,10 @@
+{"namespace": "avro",
+ "type": "record",
+ "name": "Message",
+ "fields": [
+     {"name": "id", "type": "long"},
+     {"name": "body", "type": "string"},
+     {"name": "timestamp", "type": "long"},
+     {"name": "extra",  "type": ["null", "string"]}
+ ]
+}
