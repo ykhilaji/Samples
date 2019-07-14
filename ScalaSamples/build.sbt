@@ -152,6 +152,29 @@ lazy val scalameter = (project in file("scalameter"))
       "io.circe" %% "circe-parser" % "0.11.1",
       "org.json4s" %% "json4s-native" % "3.6.5",
       "org.json4s" %% "json4s-jackson" % "3.6.5",
-      "mysql" % "mysql-connector-java" % "8.0.15",
+      "mysql" % "mysql-connector-java" % "8.0.15"
     )
   )
+
+lazy val finagle = (project in file("finagle"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "finagle-http" % "19.6.0",
+      "com.twitter" %% "finagle-thriftmux" % "19.6.0"
+    )
+  )
+  .enablePlugins(ScroogeSBT)
+
+val scroogeVersion = "19.4.0"
+val libthriftVersion = "0.12.0"
+
+lazy val thriftScrooge = (project in file("thrift-scrooge"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "org.apache.thrift" % "libthrift" % libthriftVersion,
+      "com.twitter" %% "scrooge-core" % scroogeVersion exclude("com.twitter", "libthrift")
+    )
+  )
+  .enablePlugins(ScroogeSBT)
