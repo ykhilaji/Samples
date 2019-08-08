@@ -1,5 +1,8 @@
-import org.apache.spark.sql.types.StructType
+package sparksamples
+
+import org.apache.spark.sql.types.{StructType, TimestampType}
 import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.functions._
 
 // nc -l 9999
 object SparkStreamingAggregateToConsoleSample extends App {
@@ -52,9 +55,6 @@ object SparkStreamingWindowAggregate extends App {
     .option("port", 9999)
     .load()
 
-  import org.apache.spark.sql.functions._
-  import org.apache.spark.sql.types._
-
   val linesCount: DataFrame = stream.as[String]
     .flatMap(_.split(" "))
     .map(l => l.length)
@@ -83,8 +83,6 @@ object SparkStructuredStreamingKafkaToHiveSample extends App {
   spark.sparkContext.setLogLevel("ERROR")
 
   import spark.implicits._
-  import org.apache.spark.sql.functions._
-  import org.apache.spark.sql.types._
 
   val schema = new StructType()
     .add($"id".int)

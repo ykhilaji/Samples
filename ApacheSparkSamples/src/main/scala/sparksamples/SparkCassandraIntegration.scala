@@ -1,7 +1,8 @@
+package sparksamples
+
 import org.apache.spark.sql.{SparkSession}
 import com.datastax.spark.connector._
 import com.datastax.spark.connector.cql.CassandraConnector
-
 
 object SparkCassandraIntegration extends App {
   val session = SparkSession

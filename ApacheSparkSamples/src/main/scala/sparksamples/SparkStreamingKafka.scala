@@ -1,3 +1,5 @@
+package sparksamples
+
 import java.sql.{Date, Timestamp}
 import java.time.{Instant, ZoneId}
 import java.util
@@ -16,6 +18,7 @@ import org.apache.spark.streaming.{Duration, StreamingContext}
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.sql.functions._
+
 import scala.collection.mutable
 
 object SparkStreamingKafka extends App {

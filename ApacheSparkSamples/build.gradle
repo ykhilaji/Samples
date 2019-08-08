@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+    id 'scala'
+}
+
+group 'com.github.gr1f0n6x'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.scala-lang:scala-library:2.11.12'
+
+    compile "org.apache.spark:spark-core_2.11:2.4.0"
+    compile "org.apache.spark:spark-sql_2.11:2.4.0"
+    compile "org.apache.spark:spark-streaming_2.11:2.4.0"
+    compile "org.apache.spark:spark-hive_2.11:2.4.0"
+    compile "org.apache.spark:spark-streaming-kafka-0-10_2.11:2.4.0"
+    compile "org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.0"
+    compile "com.datastax.spark:spark-cassandra-connector_2.11:2.0.7"
+
+    compile "org.postgresql:postgresql:42.2.1"
+
+    compile "org.apache.logging.log4j:log4j-api:2.11.2"
+    compile "org.apache.logging.log4j:log4j-core:2.11.2"
+}

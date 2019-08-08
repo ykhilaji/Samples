@@ -1,4 +1,8 @@
-import org.apache.spark.sql.{DataFrame, SparkSession}
+package sparksamples
+
+import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.{DoubleType, LongType, TimestampType}
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext, sql}
 
@@ -73,8 +77,6 @@ object CsvFileIntoExistingPartitionedHiveTable extends App {
     .getOrCreate()
 
   import spark.implicits._
-  import org.apache.spark.sql.functions._
-  import org.apache.spark.sql.types._
 
   val data: DataFrame = spark
     .read

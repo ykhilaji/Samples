@@ -1,3 +1,5 @@
+package sparksamples
+
 import org.apache.spark.sql.{SaveMode, SparkSession}
 
 // https://spark.apache.org/docs/latest/sql-programming-guide.html
@@ -37,7 +39,6 @@ object SelectUsingDSL extends App {
 
   ss.sparkContext.setLogLevel("WARN")
 
-
   import ss.implicits._
 
   val df = ss.read.json("/Users/grifon/WORK/Samples/SparkSamples/src/main/resources/online.json")
@@ -54,9 +55,9 @@ object DataFrameAsCaseClass extends App {
 
   ss.sparkContext.setLogLevel("WARN")
 
-  case class Info(label: String, count: Long, peak24: Long)
-
   import ss.implicits._
+
+  case class Info(label: String, count: Long, peak24: Long)
 
   val df = ss.read.json("/Users/grifon/WORK/Samples/SparkSamples/src/main/resources/online.json").as[Info]
   df.show()
