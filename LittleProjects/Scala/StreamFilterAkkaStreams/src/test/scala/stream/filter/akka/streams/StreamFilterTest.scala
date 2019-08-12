@@ -37,6 +37,8 @@ class StreamFilterTest extends TestKit(ActorSystem("stream-filter", ConfigFactor
           publishStringMessageToKafka(sourceConfig.getString("topic"), JsonUtils.toJson(Entity(i.toString)))
         })
 
+        createCustomTopic(targetConfig.getString("topic"))
+
         val stream = Source.kafkaSource(config)
           .via(Logic.toEntity())
           .via(Logic.filterBatchAsync(cache, 100, FiniteDuration(100, TimeUnit.MILLISECONDS), 4))

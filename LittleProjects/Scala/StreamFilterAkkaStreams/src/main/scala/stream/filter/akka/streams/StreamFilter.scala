@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorSystem
 import akka.kafka.scaladsl.Consumer.DrainingControl
-import akka.stream.ActorMaterializer
+import akka.stream.{ActorMaterializer, ActorMaterializerSettings, Supervision}
 import akka.stream.scaladsl.Keep
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
@@ -23,9 +23,15 @@ object StreamFilter {
 
     implicit val system = ActorSystem("stream-filter", config)
     implicit val dispatcher = system.dispatcher
-    implicit val materializer = ActorMaterializer()
 
-    val cache = AerospikeCache(cacheConfig)
+    val decider: Supervision.Decider = {
+      case _ => Supervision.Resume // just skip incorrect messages
+    }
+    implicit val materializer = ActorMaterializer(
+      ActorMaterializerSettings(system).withSupervisionStrategy(decider)
+    )
+
+    val cache = AerospikeCache(config.getConfig("filter.cache"))
 
     Source.kafkaSource(config)
       .via(Logic.toEntity())

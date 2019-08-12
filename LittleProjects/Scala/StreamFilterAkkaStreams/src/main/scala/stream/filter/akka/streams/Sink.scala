@@ -1,5 +1,7 @@
 package stream.filter.akka.streams
 
+import java.util.concurrent.TimeUnit
+
 import akka.actor.ActorSystem
 import akka.{Done, NotUsed}
 import akka.kafka.{CommitterSettings, ConsumerMessage, ProducerMessage, ProducerSettings}
@@ -10,6 +12,7 @@ import org.apache.kafka.clients.producer.{ProducerConfig, ProducerRecord}
 import org.apache.kafka.common.serialization.StringSerializer
 
 import scala.concurrent.Future
+import scala.concurrent.duration.FiniteDuration
 
 object Sink {
   // Not used because this implementation commits messages one by one -> slow
@@ -31,13 +34,19 @@ object Sink {
         .withProperty(ProducerConfig.CLIENT_ID_CONFIG, "stream-filter-producer")
         .withProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, targetConfig.getString("servers"))
 
+    // Need additional check if messages was sent correctly
     Producer.flexiFlow(producerSettings)
   }
 
   def commit(implicit system: ActorSystem): Sink[ConsumerMessage.Committable, Future[Done]] = {
     val settings = CommitterSettings(system)
 
-    Committer.sink(settings.withMaxBatch(1000).withParallelism(4))
+    Committer.sink(
+      settings
+        .withMaxBatch(100)
+        .withMaxInterval(FiniteDuration(1, TimeUnit.SECONDS))
+        .withParallelism(4)
+    )
   }
 
   def toProducerRecord(config: Config) = {
