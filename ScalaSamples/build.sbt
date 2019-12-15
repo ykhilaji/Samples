@@ -178,3 +178,12 @@ lazy val thriftScrooge = (project in file("thrift-scrooge"))
     )
   )
   .enablePlugins(ScroogeSBT)
+
+lazy val cats = (project in file("cats"))
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "org.typelevel" %% "cats-core" % "2.0.0",
+      "org.typelevel" %% "cats-effect" % "2.0.0"
+    )
+  )
