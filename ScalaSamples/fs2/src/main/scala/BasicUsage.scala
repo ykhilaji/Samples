@@ -102,12 +102,12 @@ object FileSource extends IOApp {
     Stream.resource(resource).flatMap(ec => {
       io
         .file
-        .readAll[IO](Paths.get("input.txt"), ec, 4096)
+        .readAll[IO](Paths.get("input.txt"), Blocker.liftExecutionContext(ec), 4096)
         .through(text.utf8Decode)
         .through(text.lines)
         .filter(_.length < 10)
         .through(text.utf8Encode)
-        .through(io.file.writeAll[IO](Paths.get("output.txt"), ec))
+        .through(io.file.writeAll[IO](Paths.get("output.txt"), Blocker.liftExecutionContext(ec)))
     })
       .compile.drain.as(ExitCode.Success)
   }

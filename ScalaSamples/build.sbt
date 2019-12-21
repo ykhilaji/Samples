@@ -11,7 +11,7 @@ val slickVersion = "3.2.0"
 val shapeless = "2.3.3"
 val doobieVersion = "0.6.0"
 val quillVersion = "2.6.0"
-val fs2Version = "1.0.4"
+val fs2Version = "2.1.0"
 val apacheCommonIoVersion = "2.6"
 val rxScalaVersion = "0.26.5"
 
@@ -117,7 +117,8 @@ lazy val fs2 = (project in file("fs2"))
       "co.fs2" %% "fs2-core" % fs2Version,
       "co.fs2" %% "fs2-io" % fs2Version,
       "com.spinoco" %% "fs2-cassandra" % "0.4.0",
-      "com.ovoenergy" %% "fs2-kafka" % "0.19.9"
+      "com.ovoenergy" %% "fs2-kafka" % "0.19.9",
+      "dev.profunktor" %% "fs2-rabbit" % "2.1.0"
     )
   )
 
