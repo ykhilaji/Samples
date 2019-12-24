@@ -38,6 +38,8 @@ libraryDependencies ++= Seq(
   "org.tpolecat" %% "doobie-core" % "0.8.6",
   "org.tpolecat" %% "doobie-postgres" % "0.8.6",
   "org.tpolecat" %% "doobie-hikari" % "0.8.6",
+  // flyway
+  "org.flywaydb" % "flyway-core" % "6.1.3",
   // fs2
   "co.fs2" %% "fs2-core" % "2.1.0",
   "dev.profunktor" %% "fs2-rabbit" % "2.1.0",
@@ -53,7 +55,11 @@ libraryDependencies ++= Seq(
   "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % "0.12.12",
   "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % "0.12.12",
   "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe" % "0.12.12",
-  "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % "0.12.12"
+  "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % "0.12.12",
+  // prometheus
+  "io.prometheus" % "simpleclient" % "0.8.0",
+  "io.prometheus" % "simpleclient_common" % "0.8.0",
+  "io.prometheus" % "simpleclient_hotspot" % "0.8.0"
 )
 
 mainClass in Compile := Some("com.nryanov.calculator.CalculatorApp")

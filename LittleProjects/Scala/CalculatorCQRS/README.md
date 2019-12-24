@@ -4,6 +4,8 @@
 - tapir for swagger doc
 - doobie-postgresql
 - fs2-rabbitmq
+- flyway
+- prometheus
 
 ## Build
 `sbt assembly`

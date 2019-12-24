@@ -23,6 +23,7 @@ import io.circe.generic.auto._
 import com.nryanov.calculator.mq.CommandClient
 import com.nryanov.calculator.repository.Repository
 import com.nryanov.calculator.model.{Expression, Result}
+import com.nryanov.calculator.util.Metrics
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
@@ -94,6 +95,14 @@ class HttpServer[F[_] : Sync : Effect](
 
   private val resultsByTimeRoute = resultsByTimeEndpoint.toRoute { case (from, to) => toFuture(db(repository.selectExpressionResultsByTime(from, to))) }
 
+  private val metricsEndpoint: Endpoint[Unit, ErrorInfo, String, Nothing] =
+    baseEndpoint
+      .get
+      .in("metrics")
+      .out(stringBody)
+
+  private val metricsRoute = metricsEndpoint.toRoute(_ => toFuture(Metrics.prometheusMetrics))
+
   private def toFuture[A](fa: F[A]): Future[Either[ErrorInfo, A]] =
     Effect[F]
       .toIO(fa.map(_.asRight[ErrorInfo]).handleError(e => Left(BackEndError(e.getLocalizedMessage))))
@@ -115,6 +124,7 @@ class HttpServer[F[_] : Sync : Effect](
       expressionsByTimeRoute ~
       resultsByTimeRoute ~
       newExpressionCommandRoute ~
+      metricsRoute ~
       new SwaggerAkka(openApiDocs.toYaml).routes
   }
 }
