@@ -5,10 +5,11 @@ import java.time.format.DateTimeFormatter
 
 import cats.~>
 import cats.implicits._
-import cats.effect.{Async, ContextShift, Effect, Sync}
+import cats.effect.{Async, Bracket, ContextShift, Effect, Sync}
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
+import brave.{Tracer, Tracing}
 import sttp.tapir._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.circe._
@@ -32,7 +33,8 @@ class HttpServer[F[_] : Sync : Effect](
                                         system: ActorSystem,
                                         repository: Repository[F],
                                         db: doobie.ConnectionIO ~> F, // this logic should be in separate service but for this sample it is ok to put it here
-                                        commandClient: CommandClient[F]
+                                        commandClient: CommandClient[F],
+                                        tracer: Tracer
                                       ) {
 
   import HttpServer._
@@ -55,7 +57,8 @@ class HttpServer[F[_] : Sync : Effect](
       .out(stringBody)
       .out(statusCode(StatusCode.Accepted))
 
-  private val newExpressionCommandRoute = newExpressionCommandEndpoint.toRoute(expression => toFuture(commandClient.call(expression)))
+  private val newExpressionCommandRoute = newExpressionCommandEndpoint
+    .toRoute(expression => toFuture(trace("newExpressionCommandRoute")(commandClient.call(expression))))
 
   private val expressionByUuidEndpoint: Endpoint[String, ErrorInfo, Option[Expression], Nothing] =
     baseEndpoint
@@ -64,7 +67,8 @@ class HttpServer[F[_] : Sync : Effect](
       .in(query[String]("uuid"))
       .out(jsonBody[Option[Expression]])
 
-  private val expressionByUuidRoute = expressionByUuidEndpoint.toRoute(uuid => toFuture(db(repository.selectExpression(uuid))))
+  private val expressionByUuidRoute = expressionByUuidEndpoint
+    .toRoute(uuid => toFuture(trace("expressionByUuidRoute")(db(repository.selectExpression(uuid)))))
 
   private val resultByUuidEndpoint: Endpoint[String, ErrorInfo, Option[Result], Nothing] =
     baseEndpoint
@@ -73,7 +77,8 @@ class HttpServer[F[_] : Sync : Effect](
       .in(query[String]("uuid"))
       .out(jsonBody[Option[Result]])
 
-  private val resultByUuidRoute = resultByUuidEndpoint.toRoute(uuid => toFuture(db(repository.selectExpressionResult(uuid))))
+  private val resultByUuidRoute = resultByUuidEndpoint
+    .toRoute(uuid => toFuture(trace("resultByUuidRoute")(db(repository.selectExpressionResult(uuid)))))
 
   private val expressionsByTimeEndpoint: Endpoint[(LocalDateTime, LocalDateTime), ErrorInfo, List[Expression], Nothing] =
     baseEndpoint
@@ -83,7 +88,8 @@ class HttpServer[F[_] : Sync : Effect](
       .in(query[LocalDateTime]("to"))
       .out(jsonBody[List[Expression]])
 
-  private val expressionsByTimeRoute = expressionsByTimeEndpoint.toRoute { case (from, to) => toFuture(db(repository.selectExpressionsByTime(from, to))) }
+  private val expressionsByTimeRoute = expressionsByTimeEndpoint
+    .toRoute { case (from, to) => toFuture(trace("expressionsByTimeRoute")(db(repository.selectExpressionsByTime(from, to)))) }
 
   private val resultsByTimeEndpoint: Endpoint[(LocalDateTime, LocalDateTime), ErrorInfo, List[Result], Nothing] =
     baseEndpoint
@@ -93,7 +99,8 @@ class HttpServer[F[_] : Sync : Effect](
       .in(query[LocalDateTime]("to"))
       .out(jsonBody[List[Result]])
 
-  private val resultsByTimeRoute = resultsByTimeEndpoint.toRoute { case (from, to) => toFuture(db(repository.selectExpressionResultsByTime(from, to))) }
+  private val resultsByTimeRoute = resultsByTimeEndpoint
+    .toRoute { case (from, to) => toFuture(trace("resultsByTimeRoute")(db(repository.selectExpressionResultsByTime(from, to)))) }
 
   private val metricsEndpoint: Endpoint[Unit, ErrorInfo, String, Nothing] =
     baseEndpoint
@@ -101,7 +108,13 @@ class HttpServer[F[_] : Sync : Effect](
       .in("metrics")
       .out(stringBody)
 
-  private val metricsRoute = metricsEndpoint.toRoute(_ => toFuture(Metrics.prometheusMetrics))
+  private val metricsRoute = metricsEndpoint.toRoute(_ => toFuture(Metrics.prometheusMetrics()))
+
+  private def trace[A](span: String)(fa: F[A]): F[A] = Bracket[F, Throwable].bracket(Sync[F].delay(tracer.startScopedSpan(span)))({ span =>
+    fa.onError {
+      case error: Throwable => Sync[F].delay(span.error(error)).void
+    }
+  })(span => Sync[F].delay(span.finish()))
 
   private def toFuture[A](fa: F[A]): Future[Either[ErrorInfo, A]] =
     Effect[F]
@@ -146,9 +159,10 @@ object HttpServer {
                                    system: ActorSystem,
                                    repository: Repository[F],
                                    db: doobie.ConnectionIO ~> F,
-                                   commandClient: CommandClient[F]
+                                   commandClient: CommandClient[F],
+                                   tracing: Tracing
                                  ): HttpServer[F] =
-    new HttpServer(system, repository, db, commandClient)
+    new HttpServer(system, repository, db, commandClient, tracing.tracer())
 
   def bind[F[_] : Async : ContextShift](
                                          system: ActorSystem,

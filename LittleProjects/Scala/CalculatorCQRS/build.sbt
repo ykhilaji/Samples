@@ -59,7 +59,11 @@ libraryDependencies ++= Seq(
   // prometheus
   "io.prometheus" % "simpleclient" % "0.8.0",
   "io.prometheus" % "simpleclient_common" % "0.8.0",
-  "io.prometheus" % "simpleclient_hotspot" % "0.8.0"
+  "io.prometheus" % "simpleclient_hotspot" % "0.8.0",
+  // zipkin
+  "io.zipkin.brave" % "brave" % "5.9.1",
+  "io.zipkin.reporter2" % "zipkin-reporter" % "2.12.0",
+  "io.zipkin.reporter2" % "zipkin-sender-okhttp3" % "2.12.0",
 )
 
 mainClass in Compile := Some("com.nryanov.calculator.CalculatorApp")

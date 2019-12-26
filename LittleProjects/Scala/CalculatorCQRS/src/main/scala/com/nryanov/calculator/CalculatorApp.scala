@@ -15,6 +15,10 @@ import dev.profunktor.fs2rabbit.interpreter.RabbitClient
 import dev.profunktor.fs2rabbit.model.AMQPConnection
 import org.pure4s.logger4s.LazyLogging
 import org.pure4s.logger4s.cats.Logger
+import brave.Tracing
+import zipkin2.Span
+import zipkin2.reporter.{AsyncReporter, Sender}
+import zipkin2.reporter.okhttp3.OkHttpSender
 
 object CalculatorApp extends IOApp with LazyLogging {
 
@@ -24,7 +28,9 @@ object CalculatorApp extends IOApp with LazyLogging {
                            actorMaterializer: ActorMaterializer,
                            rabbitClient: RabbitClient[F],
                            connection: AMQPConnection,
-                           db: doobie.ConnectionIO ~> F
+                           db: doobie.ConnectionIO ~> F,
+                           frontTracing: Tracing,
+                           backTracing: Tracing
                          )
 
   case class Application[F[_]](
@@ -43,11 +49,11 @@ object CalculatorApp extends IOApp with LazyLogging {
     }
 
   private def application[F[_] : ConcurrentEffect : ContextShift : Effect](common: Common[F]): Resource[F, Application[F]] = for {
-    commandClient <- CommandClient[F](common.cfg, common.rabbitClient, common.connection)
+    commandClient <- CommandClient[F](common.cfg, common.rabbitClient, common.connection, common.frontTracing)
     expressionExecutor = ExpressionExecutor()
     repository = Repository[F]()
-    server = HttpServer(common.actorSystem, repository, common.db, commandClient)
-    commandServer <- CommandServer[F](common.cfg, common.rabbitClient, common.connection, repository, expressionExecutor, common.db)
+    server = HttpServer(common.actorSystem, repository, common.db, commandClient, common.frontTracing)
+    commandServer <- CommandServer[F](common.cfg, common.rabbitClient, common.connection, repository, expressionExecutor, common.db, common.backTracing)
   } yield Application[F](server, commandServer)
 
   private def common[F[_] : ConcurrentEffect : ContextShift]: Resource[F, Common[F]] = for {
@@ -59,7 +65,11 @@ object CalculatorApp extends IOApp with LazyLogging {
     rabbitClient <- RabbitMQ.client(rabbitCfg, blocker).evalTap(client => RabbitMQ.init(cfg, client))
     connection <- rabbitClient.createConnection
     db <- DataSource.resource(cfg)
-  } yield Common[F](cfg, system, materializer, rabbitClient, connection, db)
+    sender <- zipkinSender
+    reporter <- zipkinReporter(sender)
+    frontTracing <- zipkinTracer("front", reporter)
+    backTracing <- zipkinTracer("back", reporter)
+  } yield Common[F](cfg, system, materializer, rabbitClient, connection, db, frontTracing, backTracing)
 
   private def actorSystem[F[_] : Async : ContextShift](): Resource[F, ActorSystem] = {
     def acquire: F[ActorSystem] =
@@ -79,6 +89,31 @@ object CalculatorApp extends IOApp with LazyLogging {
     def acquire: F[ActorMaterializer] = Async[F].delay(ActorMaterializer()(actorSystem))
 
     def release(materializer: ActorMaterializer): F[Unit] = Async[F].delay(materializer.shutdown())
+
+    Resource.make(acquire)(release)
+  }
+
+  private def zipkinSender[F[_]](implicit F: Sync[F]): Resource[F, Sender] = {
+    def acquire: F[Sender] = F.delay(OkHttpSender.create("http://192.168.99.100:9411/api/v2/spans")).widen[Sender]
+    def release(sender: Sender): F[Unit] = F.delay(sender.close())
+
+    Resource.make(acquire)(release)
+  }
+
+  private def zipkinReporter[F[_]](sender: Sender)(implicit F: Sync[F]): Resource[F, AsyncReporter[Span]] = {
+    def acquire: F[AsyncReporter[Span]] = F.delay(AsyncReporter.create(sender))
+    def release(reporter: AsyncReporter[Span]): F[Unit] = F.delay(reporter.close())
+
+    Resource.make(acquire)(release)
+  }
+
+  private def zipkinTracer[F[_]](serviceName: String, reporter: AsyncReporter[Span])(implicit F: Sync[F]): Resource[F, Tracing] = {
+    def acquire: F[Tracing] = F.delay(Tracing.newBuilder()
+      .localServiceName(serviceName)
+      .spanReporter(reporter)
+      .build()
+    )
+    def release(tracing: Tracing): F[Unit] = F.delay(tracing.close())
 
     Resource.make(acquire)(release)
   }
