@@ -50,5 +50,6 @@
         <module>micrometer</module>
         <module>protobuf</module>
         <module>grpc</module>
+        <module>annotation-processing</module>
     </modules>
 </project>
