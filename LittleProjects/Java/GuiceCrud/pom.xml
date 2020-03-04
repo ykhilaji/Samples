@@ -23,7 +23,7 @@
     <properties>
         <guice>4.2.0</guice>
         <jetty>9.4.8.v20171121</jetty>
-        <jackson>2.9.6</jackson>
+        <jackson>2.10.3</jackson>
         <jersey-guice>1.19.4</jersey-guice>
         <jersey>2.27</jersey>
     </properties>
