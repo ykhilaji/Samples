@@ -26,7 +26,7 @@
     <properties>
         <jetty>9.4.8.v20171121</jetty>
         <postgres>42.2.1</postgres>
-        <jackson>2.9.4</jackson>
+        <jackson>2.9.10.3</jackson>
     </properties>
 
     <dependencies>
