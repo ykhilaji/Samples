@@ -34,7 +34,7 @@
         <slf4j>1.7.25</slf4j>
         <log4j>1.2.14</log4j>
         <aspectj>1.9.0</aspectj>
-        <jackson>2.9.5</jackson>
+        <jackson>2.9.10.3</jackson>
     </properties>
 
     <dependencies>
