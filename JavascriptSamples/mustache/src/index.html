@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.js"></script>
+    <script src="script.js"></script>
+    <title>Mustache sample</title>
+</head>
+<body>
+    <div id="if-else-render-target">If-else render</div>
+    <input type="text" id="if-else-render-input"> <button id="if-else-render-btn" data-template="if-else-render-targe-template" data-target="if-else-render-target">RENDER</button>
+    <script id="if-else-render-targe-template" type="x-tmpl-mustache">
+        {{#condition}}
+            Result value: {{value}}
+        {{/condition}}
+    </script>
+
+    <div id="loop-target">loop render</div>
+    <button id="loop-target-btn" data-template="loop-template" data-target="loop-target">RENDER</button>
+    <script id="loop-template" type="x-tmpl-mustache">
+        {{#array}}
+            {{.}}
+        {{/array}}
+    </script>
+
+    <div id="with-function-loop-target">loop render</div>
+    <button id="with-function-loop-target-btn" data-template="with-function-loop-template" data-target="with-function-loop-target">RENDER</button>
+    <script id="with-function-loop-template" type="x-tmpl-mustache">
+        {{#array}}
+            {{toString}}
+        {{/array}}
+    </script>
+
+    <div id="object-target">object render</div>
+    <button id="object-btn" data-template="object-template" data-target="object-target">RENDER</button>
+    <script id="object-template" type="x-tmpl-mustache">
+        {{object.id}}
+        {{object.valueOne}}
+        {{object.valueTwo}}
+    </script>
+</body>
+</html>
